@@ -1,2 +1,4 @@
-# swerve
-A repository for testing and developing a command-based swerve Drivetrain in Kotlin, as well as including vision code.
+# 2025-REEFSCAPE-5970
+ 5970's 2025 REEFSCAPE robot code
+### RUN THIS IN TERMINAL TO UPDATE BEAVERLIB!!!!
+`git submodule update --init --recursive --remote`
