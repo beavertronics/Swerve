@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.Commands
-import frc.robot.subsystems.Phatplanner
+//import frc.robot.subsystems.Phatplanner
 
 /*
  Main code for controlling the robot. Mainly just links everything together.
@@ -42,9 +42,9 @@ object RobotController : TimedRobot() {
         ManualAutoChooser.addOption("deposit preload", manualAutoCommands["deposit preload"])
         SmartDashboard.putData("Manual auto choices", ManualAutoChooser)
         // load pathplanner autos
-        Phatplanner.autoChooser.setDefaultOption("no auto", Commands.none())
-        Phatplanner.autoChooser.addOption("3 piece center auto (backwards)", PathPlannerAuto("comp - 3 coral auto"))
-        SmartDashboard.putData("Pathplanner auto choices", Phatplanner.autoChooser)
+//        Phatplanner.autoChooser.setDefaultOption("no auto", Commands.none())
+//        Phatplanner.autoChooser.addOption("3 piece center auto (backwards)", PathPlannerAuto("comp - 3 coral auto"))
+//        SmartDashboard.putData("Pathplanner auto choices", Phatplanner.autoChooser)
 
     }
 

@@ -6,9 +6,8 @@ import edu.wpi.first.wpilibj.GenericHID
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
-import frc.robot.commands.TeleopDriveCommand
+import frc.robot.commands.swerve.TeleopDriveCommand
 import frc.robot.subsystems.Drivetrain
 
 /*
@@ -22,9 +21,11 @@ setting up the commands for running the drivetrain and the subsystems
 object TeleOp {
     val teleOpDrive: TeleopDriveCommand =
         TeleopDriveCommand(
-            { OI.rightDrive },
-            { OI.leftDrive * 0.95 }, // right side is artificially weaker to match left side
-            { false }
+            { OI.driveForwards },
+            { OI.driveStrafe },
+            { OI.rotateRobot },
+            { OI.toggleFieldOriented },
+            { OI.slowMode }
         )
 
     init {
@@ -41,9 +42,7 @@ object TeleOp {
      * getting inputs from controllers and whatnot.
      */
     object OI : SubsystemBase() {
-        val leftDriveController = CommandJoystick(0)
-        val rightDriveController = CommandJoystick(1)
-        val operatorController = CommandXboxController(2)
+        val driverController = CommandXboxController(0)
 
         /**
          * Allows you to tweak controller inputs (ie get rid of deadzone, make input more sensitive by squaring or cubing it, etc).
@@ -104,9 +103,11 @@ object TeleOp {
          * Values for inputs go here
          */
         //===== DRIVETRAIN =====//
-        val leftDrive get() = leftDriveController.y.processInput(cubed = true) * -1
-        val rightDrive get() = rightDriveController.y.processInput(cubed = true) * -1
-        val slowMode get() = rightDriveController.trigger().asBoolean
+        val driveForwards get() = driverController.leftY.processInput()
+        val driveStrafe get() = driverController.leftX.processInput()
+        val rotateRobot get() = driverController.rightX.processInput()
+        val slowMode get() = driverController.leftTrigger().asBoolean
+        val toggleFieldOriented get() = driverController.rightTrigger().asBoolean
         //===== SUBSYSTEMS =====//
     }
 }
