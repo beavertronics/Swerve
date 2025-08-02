@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.Commands
+import frc.robot.subsystems.`according to all known laws of aviation, our robot should not be able to fly`
+
 //import frc.robot.subsystems.Phatplanner
 
 /*
@@ -35,6 +37,7 @@ object RobotController : TimedRobot() {
      */
     override fun robotInit() {
         TeleOp
+//        `according to all known laws of aviation, our robot should not be able to fly`
         CameraServer.startAutomaticCapture(0) // todo 0 or 1? no drive cam :c
         // load manual autos
         ManualAutoChooser.setDefaultOption("no auto", Commands.none())
