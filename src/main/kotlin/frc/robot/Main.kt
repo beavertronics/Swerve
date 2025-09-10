@@ -12,7 +12,6 @@ You're not supposed to run other code here.
 */
 
 object Main {
-
     @JvmStatic
     fun main(args: Array<String>) = RobotBase.startRobot {
         HAL.report(FRCNetComm.tResourceType.kResourceType_Language,FRCNetComm.tInstances.kLanguage_Kotlin)

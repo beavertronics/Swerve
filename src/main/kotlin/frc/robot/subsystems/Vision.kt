@@ -17,26 +17,24 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy
 import org.photonvision.targeting.PhotonPipelineResult
 
 
-val aprilTagFieldLayout = AprilTagFieldLayout(
+val aprilTagFieldLayout = AprilTagFieldLayout( // todo
     mutableListOf(
-        AprilTag(1, Pose3d(Translation3d(0.0,0.0,0.488), Rotation3d(0.0,0.0,0.0))),
-        AprilTag(2, Pose3d(Translation3d(0.0, 1.0, 0.488), Rotation3d(0.0, 0.0, 0.0))),
-        AprilTag(3, Pose3d(Translation3d(0.0, 2.0, 0.488), Rotation3d(0.0, 0.0, 0.0)))
+        AprilTag(1, Pose3d(Translation3d(0.0,0.0,0.488), Rotation3d(0.0,0.0,0.0)))
     ),
-    10.0,10.0)
+    10.0,10.0) // todo
 
-val aprilTagFieldInGame = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded)
+val aprilTagFieldInGame = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField)
 
 //AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-val robotToCam = Transform3d(
+val robotToCam = Transform3d( // todo
     Translation3d(0.1397, -0.3302, 0.5747),
     Rotation3d(0.0, 0.0, 0.0)
 ) //Cam mounted facing forward, half a meter forward of center, half a meter up from center.
 
-val robotToCam2 = Transform3d(
-    Translation3d(0.1206, -0.2858, 0.5556),
-    Rotation3d(0.0, 0.0, (180.0).degreesToRadians())
-)
+//val robotToCam2 = Transform3d(
+//    Translation3d(0.1206, -0.2858, 0.5556),
+//    Rotation3d(0.0, 0.0, (180.0).degreesToRadians())
+//)
 
 /**
  * A MutableMap used specifically for managing Lambdas
@@ -73,25 +71,25 @@ data class Signal<Type>(
 
 object Vision : SubsystemBase() {
     val cam = PhotonCamera("Arducam_OV9281_USB_Camera")
-    val cam2 = PhotonCamera("USB_Camera")
+//    val cam2 = PhotonCamera("USB_Camera")
     val cameraOffset = robotToCam
-    val cameraOffset2 = robotToCam2
+//    val cameraOffset2 = robotToCam2
     var results = mutableListOf<PhotonPipelineResult>()
-    var results2 = mutableListOf<PhotonPipelineResult>()
+//    var results2 = mutableListOf<PhotonPipelineResult>()
     val listeners = Signal<PhotonPipelineResult>()
     var poseEstimator =
         PhotonPoseEstimator(aprilTagFieldInGame, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam)
-    var poseEstimator2 =
-        PhotonPoseEstimator(aprilTagFieldInGame, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam2)
+//    var poseEstimator2 =
+//        PhotonPoseEstimator(aprilTagFieldInGame, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam2)
     var previousPose = Pose2d()
-    var previousPose2 = Pose2d()
+//    var previousPose2 = Pose2d()
 
     init {
         poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_REFERENCE_POSE)
     }
     override fun periodic(){
         results = cam.allUnreadResults
-        results2 = cam2.allUnreadResults
+//        results2 = cam2.allUnreadResults
 
         SmartDashboard.putBoolean("resultsIsEmpty", results.isEmpty())
         if (!results.isEmpty()) {
@@ -101,11 +99,11 @@ object Vision : SubsystemBase() {
                 listeners.update(visionResult, "cam1")
             }
 
-            results2.forEach { visionResult: PhotonPipelineResult ->
-
-                listeners.update(visionResult, "cam2")
-
-            }
+//            results2.forEach { visionResult: PhotonPipelineResult ->
+//
+//                listeners.update(visionResult, "cam2")
+//
+//            }
         }
     }
 
@@ -125,15 +123,15 @@ object Vision : SubsystemBase() {
 
     }
 
-    fun getRobotPositionFromSecondCamera(result: PhotonPipelineResult): Pose3d? {
-        setReference(previousPose2)
-
-        val estimatedPose = poseEstimator2.update(result) ?: return null
-
-        if (estimatedPose.isEmpty) return null
-        previousPose2 = estimatedPose.get().estimatedPose.toPose2d()
-        return estimatedPose.get().estimatedPose
-    }
+//    fun getRobotPositionFromSecondCamera(result: PhotonPipelineResult): Pose3d? {
+//        setReference(previousPose2)
+//
+//        val estimatedPose = poseEstimator2.update(result) ?: return null
+//
+//        if (estimatedPose.isEmpty) return null
+//        previousPose2 = estimatedPose.get().estimatedPose.toPose2d()
+//        return estimatedPose.get().estimatedPose
+//    }
 
 
     /**
