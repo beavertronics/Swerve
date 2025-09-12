@@ -88,6 +88,8 @@ object TeleOp {
 
             override fun execute() {
                 controller.setRumble(rumbleSide, rumblePower)
+                // update the pose
+
             }
 
             override fun end(interrupted: Boolean) {
