@@ -4,7 +4,6 @@ import beaverlib.utils.Units.Electrical.VoltageUnit
 import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.wpilibj.Filesystem
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine
@@ -30,10 +29,6 @@ object DriveConstants {
 object Drivetrain : SubsystemBase() {
         // create anything that is set later (late init)
         var swerveDrive: SwerveDrive
-
-    override fun periodic() {
-//        SmartDashboard.putNumber("NAvx rotation", swerveDrive.gyroRotation3d.toRotation2d().rotations)
-    }
 
         /**
          * init file that runs on intialization of drivetrain class
