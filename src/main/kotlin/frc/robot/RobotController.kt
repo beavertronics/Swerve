@@ -1,17 +1,13 @@
 package frc.robot
 
-import com.pathplanner.lib.commands.PathPlannerAuto
-import edu.wpi.first.cameraserver.CameraServer
 import edu.wpi.first.wpilibj.TimedRobot
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.Commands
-import frc.robot.subsystems.Vision
+import Engine.BeaverPhotonVision
 import frc.robot.subsystems.`according to all known laws of aviation, our robot should not be able to fly`
-
-//import frc.robot.subsystems.Phatplanner
 
 /*
  Main code for controlling the robot. Mainly just links everything together.
@@ -39,11 +35,10 @@ object RobotController : TimedRobot() {
     override fun robotInit() {
         // all subsystems
         TeleOp
-        Vision
         `according to all known laws of aviation, our robot should not be able to fly`
 
         // start drive cam
-        CameraServer.startAutomaticCapture(0)
+        // CameraServer.startAutomaticCapture(0)
 
         // load manual autos
         ManualAutoChooser.setDefaultOption("no auto", Commands.none())
