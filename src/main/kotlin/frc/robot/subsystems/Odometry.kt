@@ -1,11 +1,15 @@
 package frc.robot.subsystems
 
 import beaverlib.utils.Units.Angular.AngleUnit
+import beaverlib.utils.Units.Angular.degrees
 import beaverlib.utils.Units.Linear.DistanceUnit
+import beaverlib.utils.Units.Linear.feet
+import beaverlib.utils.Units.Linear.inches
+import edu.wpi.first.apriltag.AprilTag
+import edu.wpi.first.apriltag.AprilTagFieldLayout
 import edu.wpi.first.math.geometry.*
 import edu.wpi.first.util.sendable.SendableBuilder
 import edu.wpi.first.util.sendable.SendableRegistry
-import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 
@@ -21,11 +25,59 @@ object `according to all known laws of aviation, our robot should not be able to
         })
     }
 
-    // make robot pose, field, vision pose
+    // make robot pose, vision pose
     var robotPose: Pose2d = Pose2d(0.0, 0.0, Rotation2d(0.0))
     var visionPose: Pose2d = Pose2d(0.0, 0.0, Rotation2d(0.0))
         private set
-    val field = Field2d()
+
+    // using the bunnybots 2025 "Carrot Chaos" layout for the april tag layout
+    // todo GET POSITIONS BETTER!
+    val customAprilTags : MutableList<AprilTag> = mutableListOf(
+        // blue feeder station
+        AprilTag(1, Pose3d(
+            180.0.inches.asMeters, 147.65.inches.asMeters, 44.75.inches.asMeters,
+            Rotation3d(
+                0.0.degrees.asRadians, 0.0.degrees.asRadians, -90.degrees.asRadians
+            ))),
+        AprilTag(2, Pose3d(
+            190.8.inches.asMeters, 158.4.inches.asMeters, 44.75.inches.asMeters,
+            Rotation3d(
+                0.0.degrees.asRadians, 0.0.degrees.asRadians, 0.0.degrees.asRadians
+            ))),
+        AprilTag(3, Pose3d(
+            180.0.inches.asMeters, 169.15.inches.asMeters, 44.75.inches.asMeters,
+            Rotation3d(
+                0.0.degrees.asRadians, 0.0.degrees.asRadians, 90.degrees.asRadians
+            ))),
+        AprilTag(4, Pose3d(
+            169.2.inches.asMeters, 158.4.inches.asMeters, 44.75.inches.asMeters,
+            Rotation3d(
+                0.0.degrees.asRadians, 0.0.degrees.asRadians, 180.degrees.asRadians
+            ))),
+
+        // red feeder station
+        AprilTag(5, Pose3d(
+            540.0.inches.asMeters, 147.65.inches.asMeters, 44.75.inches.asMeters,
+            Rotation3d(
+                0.0.degrees.asRadians, 0.0.degrees.asRadians, 90.0.degrees.asRadians
+            ))),
+        AprilTag(6, Pose3d(
+            529.2.inches.asMeters, 158.4.inches.asMeters, 44.75.inches.asMeters,
+            Rotation3d(
+                0.0.degrees.asRadians, 0.0.degrees.asRadians, 180.0.degrees.asRadians
+            ))),
+        AprilTag(7, Pose3d(
+            540.0.inches.asMeters, 169.15.inches.asMeters, 44.75.inches.asMeters,
+            Rotation3d(
+                0.0.degrees.asRadians, 0.0.degrees.asRadians, -90.0.degrees.asRadians
+            ))),
+        AprilTag(8, Pose3d(
+            550.8.inches.asMeters, 158.4.inches.asMeters, 44.75.inches.asMeters,
+            Rotation3d(
+                0.0.degrees.asRadians, 0.0.degrees.asRadians, 0.0.degrees.asRadians
+            )))
+    )
+    val customFieldLayout = AprilTagFieldLayout(customAprilTags, 62.75.feet.asMeters, 26.4.feet.asMeters)
 
     fun reset(x: DistanceUnit, y: DistanceUnit, theta: AngleUnit) { // todo
         val p = Pose2d(x.asMeters, y.asMeters, Rotation2d.fromRadians(theta.asRadians))
@@ -35,12 +87,12 @@ object `according to all known laws of aviation, our robot should not be able to
         val p = newPose
     }
 
-    override fun periodic() { // todo
+    override fun periodic() {
         val swervePose = Drivetrain.swerveDrive.pose
         val visionTransform = Transform2d(visionPose.x, visionPose.y, visionPose.rotation)
         val swerveTransform = Transform2d(swervePose.x, swervePose.y, swervePose.rotation)
-//        robotPose.plus(visionTransform)
-        robotPose.plus(swerveTransform)
+        robotPose = robotPose.plus(visionTransform)
+        robotPose = robotPose.plus(swerveTransform)
         if (robotPose != null) {
             SmartDashboard.putNumber("robot pose X", robotPose.x)
             SmartDashboard.putNumber("robot pose Y", robotPose.y)
