@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
+import frc.robot.commands.FollowAprilTag
 import frc.robot.commands.swerve.TeleopDriveCommand
 import frc.robot.subsystems.Drivetrain
 
@@ -35,7 +36,9 @@ object TeleOp {
     /**
      * configures things to run on specific inputs
      */
-    fun configureBindings() {}
+    fun configureBindings() {
+        OI.followTag.whileTrue(FollowAprilTag(4))
+    }
 
     /**
      * Class for the operator interface
@@ -111,6 +114,7 @@ object TeleOp {
         val slowMode get() = driverController.leftTrigger().asBoolean
         val toggleFieldOriented get() = driverController.rightTrigger().asBoolean
         //===== SUBSYSTEMS =====//
+        val followTag get() = driverController.leftBumper()
     }
 }
 
