@@ -2,8 +2,9 @@ package frc.robot.subsystems
 
 import com.pathplanner.lib.auto.AutoBuilder
 import com.pathplanner.lib.commands.PathPlannerAuto
+import com.pathplanner.lib.config.PIDConstants
 import com.pathplanner.lib.config.RobotConfig
-import com.pathplanner.lib.controllers.PPLTVController
+import com.pathplanner.lib.controllers.PPHolonomicDriveController
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.DriverStation.Alliance
@@ -51,7 +52,10 @@ object Phatplanner : SubsystemBase() {
             { newPose : Pose2d -> Drivetrain.swerveDrive.resetOdometry(newPose) },  // Method to reset odometry (will be called if your auto has a starting pose)
             { Drivetrain.swerveDrive.robotVelocity },  // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             { speeds, feedforwards -> Drivetrain.drive(speeds) },  // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-            PPLTVController(0.02),  // PPLTVController is the built-in path following controller for differential drive trains
+            PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                PIDConstants(5.0, 0.0, 0.0),  // Translation PID constants
+                PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+            ),
             config,  // The robot configuration
             {
                 // Boolean supplier that controls when the path will be mirrored for the red alliance
