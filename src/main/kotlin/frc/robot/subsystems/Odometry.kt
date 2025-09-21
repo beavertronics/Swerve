@@ -30,54 +30,6 @@ object `according to all known laws of aviation, our robot should not be able to
     var visionPose: Pose2d = Pose2d(0.0, 0.0, Rotation2d(0.0))
         private set
 
-    // using the bunnybots 2025 "Carrot Chaos" layout for the april tag layout
-    // todo GET POSITIONS BETTER!
-    val customAprilTags : MutableList<AprilTag> = mutableListOf(
-        // blue feeder station
-        AprilTag(1, Pose3d(
-            180.0.inches.asMeters, 147.65.inches.asMeters, 44.75.inches.asMeters,
-            Rotation3d(
-                0.0.degrees.asRadians, 0.0.degrees.asRadians, -90.degrees.asRadians
-            ))),
-        AprilTag(2, Pose3d(
-            190.8.inches.asMeters, 158.4.inches.asMeters, 44.75.inches.asMeters,
-            Rotation3d(
-                0.0.degrees.asRadians, 0.0.degrees.asRadians, 0.0.degrees.asRadians
-            ))),
-        AprilTag(3, Pose3d(
-            180.0.inches.asMeters, 169.15.inches.asMeters, 44.75.inches.asMeters,
-            Rotation3d(
-                0.0.degrees.asRadians, 0.0.degrees.asRadians, 90.degrees.asRadians
-            ))),
-        AprilTag(4, Pose3d(
-            169.2.inches.asMeters, 158.4.inches.asMeters, 44.75.inches.asMeters,
-            Rotation3d(
-                0.0.degrees.asRadians, 0.0.degrees.asRadians, 180.degrees.asRadians
-            ))),
-
-        // red feeder station
-        AprilTag(5, Pose3d(
-            540.0.inches.asMeters, 147.65.inches.asMeters, 44.75.inches.asMeters,
-            Rotation3d(
-                0.0.degrees.asRadians, 0.0.degrees.asRadians, 90.0.degrees.asRadians
-            ))),
-        AprilTag(6, Pose3d(
-            529.2.inches.asMeters, 158.4.inches.asMeters, 44.75.inches.asMeters,
-            Rotation3d(
-                0.0.degrees.asRadians, 0.0.degrees.asRadians, 180.0.degrees.asRadians
-            ))),
-        AprilTag(7, Pose3d(
-            540.0.inches.asMeters, 169.15.inches.asMeters, 44.75.inches.asMeters,
-            Rotation3d(
-                0.0.degrees.asRadians, 0.0.degrees.asRadians, -90.0.degrees.asRadians
-            ))),
-        AprilTag(8, Pose3d(
-            550.8.inches.asMeters, 158.4.inches.asMeters, 44.75.inches.asMeters,
-            Rotation3d(
-                0.0.degrees.asRadians, 0.0.degrees.asRadians, 0.0.degrees.asRadians
-            )))
-    )
-    val customFieldLayout = AprilTagFieldLayout(customAprilTags, 62.75.feet.asMeters, 26.4.feet.asMeters)
 
     fun reset(x: DistanceUnit, y: DistanceUnit, theta: AngleUnit) { // todo
         val p = Pose2d(x.asMeters, y.asMeters, Rotation2d.fromRadians(theta.asRadians))
