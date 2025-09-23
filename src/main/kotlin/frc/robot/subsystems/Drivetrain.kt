@@ -20,7 +20,7 @@ import java.io.File
 object DriveConstants {
     // for YAGSL to find swerve directory
     val DriveConfig = File(Filesystem.getDeployDirectory(), "swerve")
-    val MaxSpeed = 10.0 // in m/s
+    val MaxSpeed = 2.0 // in m/s
 }
 
 /**

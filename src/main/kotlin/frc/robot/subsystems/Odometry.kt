@@ -50,6 +50,8 @@ object `according to all known laws of aviation, our robot should not be able to
             SmartDashboard.putNumber("robot pose Y", robotPose.y)
             SmartDashboard.putNumber("robot rotation", robotPose.rotation.degrees)
         }
+
+        Vision.setAllCameraReferences(robotPose)
     }
 
     override fun initSendable(builder: SendableBuilder) {
