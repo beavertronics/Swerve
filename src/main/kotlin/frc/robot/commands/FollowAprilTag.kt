@@ -1,18 +1,19 @@
 package frc.robot.commands
 
 import beaverlib.utils.Sugar.clamp
-import beaverlib.utils.Units.seconds
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
-import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj2.command.Command
 import frc.robot.subsystems.Drivetrain
 import frc.robot.subsystems.Vision
 import org.photonvision.targeting.PhotonTrackedTarget
 import kotlin.math.sign
 
-class FollowAprilTag(val aprilTagID: Int) : Command() {
-    val timer : Timer = Timer()
+class FollowAprilTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Command() {
+    var frameCount = 0
+    var lastX = 0.0
+    var lastY = 0.0
+    var lastRotation = 0.0
     // add the needed subsystems to requirements
     init {
         addRequirements(Drivetrain)
@@ -20,15 +21,12 @@ class FollowAprilTag(val aprilTagID: Int) : Command() {
 
     // get the correct april tag
     var desiredTag : PhotonTrackedTarget? = null
-    var lastSeenTag = 0.seconds
     override fun initialize() {
-        timer.restart()
         Vision.listeners.add("FollowTag") { result, camera ->
             val desiredTagA = result.targets.filter { it.fiducialId == aprilTagID }
             if (desiredTagA.isEmpty()) {
                 return@add
             }
-            lastSeenTag = timer.get().seconds
             desiredTag = desiredTagA.first()
         }
     }
@@ -36,10 +34,23 @@ class FollowAprilTag(val aprilTagID: Int) : Command() {
     // align with tag in respects to X, Y, and rotation
     override fun execute() {
         // if we lost the april tag, stop driving (and don't ram into things!)
-        if (desiredTag == null || (timer.get() - lastSeenTag.asSeconds) > 0.1) {
+        if (desiredTag == null) {
             Drivetrain.drive(ChassisSpeeds())
             return
         }
+        // see if we are not moving (stale frame?)
+        else if (
+            desiredTag!!.bestCameraToTarget.rotation.z == lastRotation &&
+            desiredTag!!.bestCameraToTarget.x == lastX &&
+            desiredTag!!.bestCameraToTarget.y == lastY
+        ) {
+            frameCount += 1
+            if (frameCount >= 4) {
+                Drivetrain.drive(ChassisSpeeds())
+            }
+            return
+        }
+        frameCount = 0
 
         // generate a value to align with the tag via z (rotation)
         val yawToTag = desiredTag!!.bestCameraToTarget.rotation.z
@@ -48,32 +59,35 @@ class FollowAprilTag(val aprilTagID: Int) : Command() {
         // also, rotation2D handles the issue with a half-turn rotation and wraps to 360 (?)
         val rotateError = Rotation2d.fromDegrees(180.0).minus(Rotation2d.fromRadians(yawToTag)).radians
         val rotateP = rotateKP * rotateError
-        val driveRotate = rotateP +
-                (-0.01 * rotateError.sign) // gives it a little more kick towards 0 error (constant) // todo change sign?
+        val driveRotate = (rotateP +
+                (-0.01 * rotateError.sign)).clamp(-1.0 * speedLimit, speedLimit) // gives it a little more kick towards 0 error (constant) // todo change sign?
 
 
         // generate a value to align with the tag via x (forwards/backwards)
         val xToTag = desiredTag!!.bestCameraToTarget.x
-        val xKP = -1.0
+        val xKP = -1.0 // todo tune? (original = 1)
         val xError = xToTag - 2.0 // current - goal of 1 meter
         val xP = xKP * xError
         val driveX = (xP +
-                (-0.01 * xError.sign)).clamp(-1.0, 1.0) // gives it a little more kick towards 0 error (constant) // todo change sign?
+                (-0.01 * xError.sign)).clamp(-1.0 * speedLimit, speedLimit) // gives it a little more kick towards 0 error (constant) // todo change sign?
 
 
         // generate a value to align with the tag via y (left/right)
-        // todo get working
         val yToTag = desiredTag!!.bestCameraToTarget.y
-        val yKP = 1.0 // todo change sign?
-        val yError = yToTag - 1.0 // current - goal of 1 meter
+        val yKP = -1.0
+        val yError = yToTag // current - goal of 1 meter
         val yP = yKP * yError
         val driveY = (yP +
-                (0.01 * yError.sign)).clamp(-1.0, 1.0) // gives it a little more kick towards 0 error (constant) // todo change sign?
+                (0.01 * yError.sign)).clamp(-1.0 * speedLimit, speedLimit) // gives it a little more kick towards 0 error (constant) // todo change sign?
 
+        // update trackers of previous movement
+        lastX = xToTag
+        lastY = yToTag
+        lastRotation = yawToTag
 
         // add everything into a chassis speed and drive robot
 //        Drivetrain.drive(ChassisSpeeds(driveX, driveY, driveRotate)) // in m/s and radians/s
-        Drivetrain.drive(ChassisSpeeds(driveX, 0.0, driveRotate)) // in m/s and radians/s
+        Drivetrain.drive(ChassisSpeeds(driveX, driveY, driveRotate)) // in m/s and radians/s
     }
 
 
