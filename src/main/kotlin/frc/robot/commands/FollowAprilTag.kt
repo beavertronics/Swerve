@@ -10,10 +10,10 @@ import org.photonvision.targeting.PhotonTrackedTarget
 import kotlin.math.sign
 
 class FollowAprilTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Command() {
-    var frameCount = 0
-    var lastX = 0.0
-    var lastY = 0.0
-    var lastRotation = 0.0
+//    var frameCount = 0
+//    var lastX = 0.0
+//    var lastY = 0.0
+//    var lastRotation = 0.0
     // add the needed subsystems to requirements
     init {
         addRequirements(Drivetrain)
@@ -25,6 +25,7 @@ class FollowAprilTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Comman
         Vision.listeners.add("FollowTag") { result, camera ->
             val desiredTagA = result.targets.filter { it.fiducialId == aprilTagID }
             if (desiredTagA.isEmpty()) {
+                desiredTag = null
                 return@add
             }
             desiredTag = desiredTagA.first()
@@ -39,18 +40,18 @@ class FollowAprilTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Comman
             return
         }
         // see if we are not moving (stale frame?)
-        else if (
-            desiredTag!!.bestCameraToTarget.rotation.z == lastRotation &&
-            desiredTag!!.bestCameraToTarget.x == lastX &&
-            desiredTag!!.bestCameraToTarget.y == lastY
-        ) {
-            frameCount += 1
-            if (frameCount >= 4) {
-                Drivetrain.drive(ChassisSpeeds())
-            }
-            return
-        }
-        frameCount = 0
+//        else if (
+//            desiredTag!!.bestCameraToTarget.rotation.z == lastRotation &&
+//            desiredTag!!.bestCameraToTarget.x == lastX &&
+//            desiredTag!!.bestCameraToTarget.y == lastY
+//        ) {
+//            frameCount += 1
+//            if (frameCount >= 4) {
+//                Drivetrain.drive(ChassisSpeeds())
+//            }
+//            return
+//        }
+//        frameCount = 0
 
         // generate a value to align with the tag via z (rotation)
         val yawToTag = desiredTag!!.bestCameraToTarget.rotation.z
@@ -60,16 +61,16 @@ class FollowAprilTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Comman
         val rotateError = Rotation2d.fromDegrees(180.0).minus(Rotation2d.fromRadians(yawToTag)).radians
         val rotateP = rotateKP * rotateError
         val driveRotate = (rotateP +
-                (-0.01 * rotateError.sign)).clamp(-1.0 * speedLimit, speedLimit) // gives it a little more kick towards 0 error (constant) // todo change sign?
+                (-0.01 * rotateError.sign)).clamp(-1.0 * speedLimit, speedLimit) // gives it a little more kick towards 0 error (constant)
 
 
         // generate a value to align with the tag via x (forwards/backwards)
         val xToTag = desiredTag!!.bestCameraToTarget.x
-        val xKP = -1.0 // todo tune? (original = 1)
+        val xKP = -1.0
         val xError = xToTag - 2.0 // current - goal of 1 meter
         val xP = xKP * xError
         val driveX = (xP +
-                (-0.01 * xError.sign)).clamp(-1.0 * speedLimit, speedLimit) // gives it a little more kick towards 0 error (constant) // todo change sign?
+                (-0.01 * xError.sign)).clamp(-1.0 * speedLimit, speedLimit) // gives it a little more kick towards 0 error (constant)
 
 
         // generate a value to align with the tag via y (left/right)
@@ -78,15 +79,14 @@ class FollowAprilTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Comman
         val yError = yToTag // current - goal of 1 meter
         val yP = yKP * yError
         val driveY = (yP +
-                (0.01 * yError.sign)).clamp(-1.0 * speedLimit, speedLimit) // gives it a little more kick towards 0 error (constant) // todo change sign?
+                (0.01 * yError.sign)).clamp(-1.0 * speedLimit, speedLimit) // gives it a little more kick towards 0 error (constant)
 
         // update trackers of previous movement
-        lastX = xToTag
-        lastY = yToTag
-        lastRotation = yawToTag
+//        lastX = xToTag
+//        lastY = yToTag
+//        lastRotation = yawToTag
 
         // add everything into a chassis speed and drive robot
-//        Drivetrain.drive(ChassisSpeeds(driveX, driveY, driveRotate)) // in m/s and radians/s
         Drivetrain.drive(ChassisSpeeds(driveX, driveY, driveRotate)) // in m/s and radians/s
     }
 
@@ -94,6 +94,7 @@ class FollowAprilTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Comman
     override fun isFinished(): Boolean {
         return false
     }
+
 
     override fun end(interrupted: Boolean) {
         Vision.listeners.remove("FollowTag")
