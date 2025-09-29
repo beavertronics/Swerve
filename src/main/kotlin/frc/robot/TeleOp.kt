@@ -38,8 +38,7 @@ object TeleOp {
      * configures things to run on specific inputs
      */
     fun configureBindings() {
-        OI.followTag.whileTrue(FollowAprilTag(1, 0.125))
-        OI.driveCircle.whileTrue(Circle())
+        OI.followTag.whileTrue(FollowAprilTag(1))
     }
 
     /**
