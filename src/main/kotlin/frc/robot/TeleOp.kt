@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
+import frc.robot.commands.Circle
 import frc.robot.commands.FollowAprilTag
 import frc.robot.commands.swerve.TeleopDriveCommand
 import frc.robot.subsystems.Drivetrain
@@ -38,6 +39,7 @@ object TeleOp {
      */
     fun configureBindings() {
         OI.followTag.whileTrue(FollowAprilTag(1, 0.125))
+        OI.driveCircle.whileTrue(Circle())
     }
 
     /**
@@ -115,6 +117,7 @@ object TeleOp {
         val toggleFieldOriented get() = driverController.rightTrigger().asBoolean
         //===== SUBSYSTEMS =====//
         val followTag get() = driverController.leftBumper()
+        val driveCircle get() = driverController.rightBumper()
     }
 }
 

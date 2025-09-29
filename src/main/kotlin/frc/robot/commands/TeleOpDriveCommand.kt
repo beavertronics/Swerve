@@ -49,9 +49,9 @@ class TeleopDriveCommand(
         SmartDashboard.putNumber("omega", angVelocity)
 
         if (slowMode) {
-            forwardVelocity *= 0.6
-            strafeVelocity *= 0.6
-            angVelocity *= 0.6
+            forwardVelocity *= 0.125
+            strafeVelocity *= 0.125
+            angVelocity *= 1.0
         }
 
         // Drive using raw values
