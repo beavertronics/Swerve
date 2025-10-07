@@ -73,7 +73,7 @@ val customFieldLayout = AprilTagFieldLayout(customAprilTags, 62.75.feet.asMeters
 
 val Vision = BeaverPhotonVision(
     VisionCamera(
-        name = "victoiA",
+        name = "Arducam_OV9281_USB_Camera - Camronny",
         // 12.5 inches backwards, 7.0 inches right, 22.5 inches up on the robot
         robotToCamera = Transform3d(
             -12.5.inches.asMeters, -7.0.inches.asMeters, 22.5.inches.asMeters,

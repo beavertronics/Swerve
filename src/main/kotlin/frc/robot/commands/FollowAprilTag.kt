@@ -1,6 +1,7 @@
 package frc.robot.commands
 
 import beaverlib.utils.Sugar.clamp
+import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.wpilibj2.command.Command
@@ -10,13 +11,23 @@ import org.photonvision.targeting.PhotonTrackedTarget
 import kotlin.math.sign
 
 class FollowAprilTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Command() {
-//    var frameCount = 0
-//    var lastX = 0.0
-//    var lastY = 0.0
-//    var lastRotation = 0.0
+    val rotateKP = 1.0
+    val xKP = 1.0
+    val yKP = 1.0
+    val rotatePID = PIDController(rotateKP, 0.0, 0.0)
+    val xPID = PIDController(xKP, 0.0, 0.0)
+    val yPID = PIDController(yKP, 0.0, 0.0)
     // add the needed subsystems to requirements
     init {
         addRequirements(Drivetrain)
+        rotatePID.setpoint = 180.0 // degrees
+        xPID.setpoint = 1.0 // meters
+        yPID.setpoint = 0.0 // meters
+
+        // give it some deadzone that rotation is ok
+        rotatePID.setTolerance(0.025)
+        xPID.setTolerance(0.025)
+        yPID.setTolerance(0.025)
     }
 
     // get the correct april tag
@@ -39,55 +50,31 @@ class FollowAprilTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Comman
             Drivetrain.drive(ChassisSpeeds())
             return
         }
-        // see if we are not moving (stale frame?)
-//        else if (
-//            desiredTag!!.bestCameraToTarget.rotation.z == lastRotation &&
-//            desiredTag!!.bestCameraToTarget.x == lastX &&
-//            desiredTag!!.bestCameraToTarget.y == lastY
-//        ) {
-//            frameCount += 1
-//            if (frameCount >= 4) {
-//                Drivetrain.drive(ChassisSpeeds())
-//            }
-//            return
-//        }
-//        frameCount = 0
 
         // generate a value to align with the tag via z (rotation)
         val yawToTag = desiredTag!!.bestCameraToTarget.rotation.z
-        val rotateKP = 1.0
         // 180 degrees is facing tag, so gets difference from 180 - current rotation
         // also, rotation2D handles the issue with a half-turn rotation and wraps to 360 (?)
         val rotateError = Rotation2d.fromDegrees(180.0).minus(Rotation2d.fromRadians(yawToTag)).radians
-        val rotateP = rotateKP * rotateError
-        val driveRotate = (rotateP +
+        val driveRotate = ((rotatePID.calculate(rotateError) * 1.0) +
                 (-0.01 * rotateError.sign)).clamp(-1.0 * speedLimit, speedLimit) // gives it a little more kick towards 0 error (constant)
 
 
         // generate a value to align with the tag via x (forwards/backwards)
         val xToTag = desiredTag!!.bestCameraToTarget.x
-        val xKP = -1.0
         val xError = xToTag - 2.0 // current - goal of 1 meter
-        val xP = xKP * xError
-        val driveX = (xP +
+        val driveX = ((xPID.calculate(xError) * -1.0) +
                 (-0.01 * xError.sign)).clamp(-1.0 * speedLimit, speedLimit) // gives it a little more kick towards 0 error (constant)
 
 
         // generate a value to align with the tag via y (left/right)
         val yToTag = desiredTag!!.bestCameraToTarget.y
-        val yKP = -1.0
         val yError = yToTag // current - goal of 1 meter
-        val yP = yKP * yError
-        val driveY = (yP +
+        val driveY = ((yPID.calculate(yError) * -1.0) +
                 (0.01 * yError.sign)).clamp(-1.0 * speedLimit, speedLimit) // gives it a little more kick towards 0 error (constant)
 
-        // update trackers of previous movement
-//        lastX = xToTag
-//        lastY = yToTag
-//        lastRotation = yawToTag
-
         // add everything into a chassis speed and drive robot
-        Drivetrain.drive(ChassisSpeeds(driveX, driveY, driveRotate)) // in m/s and radians/s
+        Drivetrain.drive(ChassisSpeeds(0.0, 0.0, driveRotate)) // in m/s and radians/s
     }
 
 
