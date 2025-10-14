@@ -51,7 +51,7 @@ class TeleopDriveCommand(
         if (slowMode) {
             forwardVelocity *= 0.125
             strafeVelocity *= 0.125
-            angVelocity *= 1.0
+            angVelocity *= 0.125
         }
 
         // Drive using raw values
