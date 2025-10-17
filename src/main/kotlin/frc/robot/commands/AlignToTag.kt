@@ -1,9 +1,6 @@
 package frc.robot.commands
 
 import beaverlib.utils.Sugar.clamp
-import beaverlib.utils.Units.Angular.asDegrees
-import beaverlib.utils.Units.Angular.degrees
-import beaverlib.utils.Units.Angular.radians
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
@@ -11,10 +8,9 @@ import edu.wpi.first.wpilibj2.command.Command
 import frc.robot.subsystems.Drivetrain
 import frc.robot.subsystems.Vision
 import org.photonvision.targeting.PhotonTrackedTarget
-import kotlin.math.abs
-import kotlin.math.sign
 
-class FollowAprilTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Command() {
+class AlignToTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Command() {
+    var initialized = false
     val rotateKP = 0.425 // 0.25
     val rotateKD = 0.0
     val xKP = 1.5
@@ -26,11 +22,11 @@ class FollowAprilTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Comman
     init {
         addRequirements(Drivetrain)
         rotatePID.setpoint = 0.0 // degrees
-        xPID.setpoint = 2.0 // meters
+        xPID.setpoint = 2.0 // meters, robot is ~1 meter so should be goal distance + 1 meter
         yPID.setpoint = 0.0 // meters
 
         // give it some deadzone
-        rotatePID.setTolerance(0.0) // degrees
+        rotatePID.setTolerance(0.1) // degrees // NOTE NOT USED FOR DEADZONE ONLY FOR FINISH!
         xPID.setTolerance(0.125) // meters
         yPID.setTolerance(0.125) // meters
     }
@@ -38,13 +34,15 @@ class FollowAprilTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Comman
     // get the correct april tag
     var desiredTag : PhotonTrackedTarget? = null
     override fun initialize() {
-        Vision.listeners.add("FollowTag") { result, camera ->
+        print("Aligning to tag:")
+        println(aprilTagID)
+        Vision.listeners.add("AlignTag") { result, _ ->
             val desiredTagA = result.targets.filter { it.fiducialId == aprilTagID }
-            if (desiredTagA.isEmpty()) {
-                desiredTag = null
-                return@add
+            if (desiredTagA.isNotEmpty()) {
+                desiredTag = desiredTagA.first()
+                initialized = true
+                print("has tag!")
             }
-            desiredTag = desiredTagA.first()
         }
     }
 
@@ -91,14 +89,12 @@ class FollowAprilTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Comman
         Drivetrain.drive(ChassisSpeeds(driveX, driveY, driveRotate)) // in m/s and radians/s
     }
 
-
     override fun isFinished(): Boolean {
-        return false
+        return (xPID.atSetpoint() && yPID.atSetpoint() && rotatePID.atSetpoint() && initialized)
     }
 
-
     override fun end(interrupted: Boolean) {
-        Vision.listeners.remove("FollowTag")
+        Vision.listeners.remove("AlignTag")
         return
     }
 }

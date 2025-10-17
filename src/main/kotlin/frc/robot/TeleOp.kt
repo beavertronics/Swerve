@@ -5,8 +5,10 @@ import beaverlib.utils.Sugar.within
 import edu.wpi.first.wpilibj.GenericHID
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
+import frc.robot.commands.AlignToTag
 import frc.robot.commands.Circle
 import frc.robot.commands.FollowAprilTag
 import frc.robot.commands.swerve.TeleopDriveCommand
