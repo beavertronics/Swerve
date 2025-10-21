@@ -1,6 +1,7 @@
 package frc.robot.commands
 
 import beaverlib.utils.Sugar.clamp
+import beaverlib.utils.Sugar.roundTo
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
@@ -10,38 +11,39 @@ import frc.robot.subsystems.Vision
 import org.photonvision.targeting.PhotonTrackedTarget
 
 class AlignToTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Command() {
-    var initialized = false
-    val rotateKP = 0.425 // 0.25
-    val rotateKD = 0.0
-    val xKP = 1.5
-    val yKP = 1.5
-    val rotatePID = PIDController(rotateKP, 0.0, rotateKD)
+    var firstCalculation = false
+    val rotateKP = 0.8 // 0.25
+    val xKP = 2.0
+    val yKP = 2.0
+    val rotatePID = PIDController(rotateKP, 0.0, 0.0)
     val xPID = PIDController(xKP, 0.0, 0.0)
     val yPID = PIDController(yKP, 0.0, 0.0)
+
     // add the needed subsystems to requirements
     init {
         addRequirements(Drivetrain)
+        rotatePID.reset()
+        xPID.reset()
+        yPID.reset()
         rotatePID.setpoint = 0.0 // degrees
         xPID.setpoint = 2.0 // meters, robot is ~1 meter so should be goal distance + 1 meter
         yPID.setpoint = 0.0 // meters
 
         // give it some deadzone
         rotatePID.setTolerance(0.1) // degrees // NOTE NOT USED FOR DEADZONE ONLY FOR FINISH!
-        xPID.setTolerance(0.125) // meters
-        yPID.setTolerance(0.125) // meters
+        xPID.setTolerance(0.25) // meters
+        yPID.setTolerance(0.25) // meters
     }
 
     // get the correct april tag
     var desiredTag : PhotonTrackedTarget? = null
     override fun initialize() {
-        print("Aligning to tag:")
+        print("Aligning to tag: ")
         println(aprilTagID)
         Vision.listeners.add("AlignTag") { result, _ ->
             val desiredTagA = result.targets.filter { it.fiducialId == aprilTagID }
             if (desiredTagA.isNotEmpty()) {
                 desiredTag = desiredTagA.first()
-                initialized = true
-                print("has tag!")
             }
         }
     }
@@ -85,12 +87,27 @@ class AlignToTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Command() 
             driveY = 0.0
         }
 
+        print("Rotation error, x error, y error: ")
+        print(calculatedRotate.roundTo(3))
+        print(", ")
+        print(calculatedX.roundTo(3))
+        print(", ")
+        println(calculatedY.roundTo(3))
+
         // add everything into a chassis speed and drive robot
         Drivetrain.drive(ChassisSpeeds(driveX, driveY, driveRotate)) // in m/s and radians/s
+
+        // after first calculation has been implemented, change boolean to true
+        if (firstCalculation == false) { firstCalculation = true }
     }
 
     override fun isFinished(): Boolean {
-        return (xPID.atSetpoint() && yPID.atSetpoint() && rotatePID.atSetpoint() && initialized)
+        if (xPID.atSetpoint() && yPID.atSetpoint() && rotatePID.atSetpoint() && firstCalculation) {
+            print("Done for tag: ")
+            println(aprilTagID)
+            return true
+        }
+        return false
     }
 
     override fun end(interrupted: Boolean) {
