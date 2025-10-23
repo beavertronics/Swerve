@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import frc.robot.commands.AlignToTag
+import frc.robot.commands.Wait
 //import frc.robot.subsystems.Phatplanner
 import frc.robot.subsystems.`according to all known laws of aviation, our robot should not be able to fly`
 
@@ -47,7 +48,9 @@ object RobotController : TimedRobot() {
         ManualAutoChooser.addOption("Align to tag",
             SequentialCommandGroup(
                     AlignToTag(2),
+                    Wait(2.0),
                     AlignToTag(3),
+                    Wait(2.0),
                     AlignToTag(4)
                 )
         )
