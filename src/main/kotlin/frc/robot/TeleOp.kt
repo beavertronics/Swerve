@@ -2,18 +2,14 @@ package frc.robot
 
 import kotlin.math.*
 import beaverlib.utils.Sugar.within
+import edu.wpi.first.wpilibj.DoubleSolenoid
 import edu.wpi.first.wpilibj.GenericHID
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj2.command.Command
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
-import frc.robot.commands.AlignToTag
-import frc.robot.commands.Circle
-import frc.robot.commands.FollowAprilTag
-import frc.robot.commands.Move
+import frc.robot.commands.*
 import frc.robot.commands.swerve.TeleopDriveCommand
-import frc.robot.subsystems.Drivetrain
 
 /*
 Sets up the operator interface (controller inputs), as well as
@@ -34,16 +30,18 @@ object TeleOp {
         )
 
     init {
-        Drivetrain.defaultCommand = teleOpDrive
+        // Drivetrain.defaultCommand = teleOpDrive
     }
 
     /**
      * configures things to run on specific inputs
      */
     fun configureBindings() {
-        OI.followTag.whileTrue(FollowAprilTag(1))
+//        OI.followTag.whileTrue(FollowAprilTag(1))
 //        OI.movement.whileTrue(Move(1.0, 0.0, 0.0))
-        OI.driveCircle.whileTrue(Circle())
+//        OI.driveCircle.whileTrue(Circle())
+        OI.lowerIntake.whileTrue(MoveIntake(DoubleSolenoid.Value.kForward))
+        OI.raiseIntake.whileTrue(MoveIntake(DoubleSolenoid.Value.kReverse))
     }
 
     /**
@@ -123,6 +121,9 @@ object TeleOp {
         val followTag get() = driverController.leftBumper()
 //        val movement get() = driverController.leftBumper()
         val driveCircle get() = driverController.rightBumper()
+
+        val lowerIntake get() = driverController.povDown()
+        val raiseIntake get() = driverController.povUp()
     }
 }
 
