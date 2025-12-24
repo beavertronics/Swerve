@@ -1,5 +1,6 @@
 package frc.robot.commands.drive
 
+import beaverlib.utils.Sugar.clamp
 import edu.wpi.first.wpilibj2.command.Command
 import frc.robot.subsystems.Drivetrain
 import java.util.function.BooleanSupplier
@@ -16,14 +17,15 @@ object SwankConstants {
  * @param slowMode the toggle for enabling slow mode
  */
 class Swank(
-    var vLeft: DoubleSupplier, // should be 0 to 1
-    var vRight: DoubleSupplier, // should be 0 to 1
+    var vLeft: DoubleSupplier,
+    var vRight: DoubleSupplier,
     val slowMode: BooleanSupplier
 ) : Command() {
 
     val slowMult = 0.125
-    var leftVelocity = vLeft.asDouble
-    var rightVelocity = vRight.asDouble
+    // clamped just in case someone does a wrong value
+    var leftVelocity = vLeft.asDouble.clamp(-1.0, 1.0)
+    var rightVelocity = vRight.asDouble.clamp(-1.0, 1.0)
 
     init {
         addRequirements(Drivetrain)
@@ -35,21 +37,41 @@ class Swank(
     val blm = Drivetrain.swerveDrive.moduleMap["backLeft"] // todo exists?
     val brm = Drivetrain.swerveDrive.moduleMap["backRight"] // todo exists?
 
-    fun siezeSteering() {
+    /**
+     * Resets the steering motors and brakes the steering motors.
+     */
+    private fun siezeSteering() {
+        // reset the steering angle and brake steering motors
         Drivetrain.swerveDrive.modules.forEach {
-            // reset all steering motors to 0 degrees
             it.setAngle(0.0)
-            // make all steering motors brake
             it.angleMotor.setMotorBrake(true)
         }
     }
 
-    fun driveLeft(mult: Double) {
+    /**
+     * Stops the driving motors from moving.
+     */
+    private fun siezeDriving() {
+        // stop all drive motors from moving
+        Drivetrain.swerveDrive.modules.forEach {
+            it.driveMotor.set(0.0)
+        }
+    }
+
+    /**
+     * Runs the left modules drive motors at the set speed.
+     * @param mult decimal form of a percent to run the motors at.
+     */
+    private fun driveLeft(mult: Double) {
         flm?.driveMotor?.set(100 * mult)
         blm?.driveMotor?.set(100 * mult)
     }
 
-    fun driveRight(mult: Double) {
+    /**
+     * Runs the right modules drive motors at the set speed.
+     * @param mult decimal form of a percent to run the motors at.
+     */
+    private fun driveRight(mult: Double) {
         frm?.driveMotor?.set(100 * mult)
         brm?.driveMotor?.set(100 * mult)
     }
@@ -57,6 +79,8 @@ class Swank(
     override fun initialize() {
         // disable steering
          siezeSteering()
+        // stop any driving
+        siezeDriving()
     }
 
     override fun execute() {
@@ -70,4 +94,9 @@ class Swank(
         driveLeft(leftVelocity)
         driveRight(rightVelocity)
     }
+
+    override fun isFinished(): Boolean { return false }
+
+    // stop driving
+    override fun end(interrupted: Boolean) { siezeDriving() }
 }
