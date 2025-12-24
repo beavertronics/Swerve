@@ -1,9 +1,6 @@
-package frc.robot.commands
+package frc.robot.commands.tests
 
 import beaverlib.utils.Sugar.clamp
-import beaverlib.utils.Units.Angular.asDegrees
-import beaverlib.utils.Units.Angular.degrees
-import beaverlib.utils.Units.Angular.radians
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
@@ -11,8 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command
 import frc.robot.subsystems.Drivetrain
 import frc.robot.subsystems.Vision
 import org.photonvision.targeting.PhotonTrackedTarget
-import kotlin.math.abs
-import kotlin.math.sign
 
 class FollowAprilTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Command() {
     val rotateKP = 0.425 // 0.25
