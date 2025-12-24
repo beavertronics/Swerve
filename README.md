@@ -1,7 +1,12 @@
 # 2025-REEFSCAPE-5970
- 5970's Swerve robot code
+Swerve code for 5970, using the Swerve library YAGSL.
+In addition to normal Swerve, this project also includes 
+Swank and Swar -- both normal Swar and four-steer Swar (FS-Swar).
 
-### RUN THIS IN TERMINAL TO UPDATE BEAVERLIB!!!!
-`git submodule update --init --recursive --remote`
+## To update Beaverlib, run this in terminal:
+- `git submodule update --init --recursive --remote`
 
-[Instructions on swerve setup](/Swerve.md)
+## Instructions / information
+- [Instructions on Swerve setup](/doc/Swerve.md)
+- [Information on Swank](/doc/Swank.md)
+- [Information on Swar and FS-Swar](/doc/Swar.md)
