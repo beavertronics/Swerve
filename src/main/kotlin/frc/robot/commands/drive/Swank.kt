@@ -6,10 +6,6 @@ import frc.robot.subsystems.Drivetrain
 import java.util.function.BooleanSupplier
 import java.util.function.DoubleSupplier
 
-object SwankConstants {
-
-}
-
 /**
  * A command that drives swerve like Tank drive.
  * @param vLeft the controller input for left drive
@@ -23,9 +19,7 @@ class Swank(
 ) : Command() {
 
     val slowMult = 0.125
-    // clamped just in case someone does a wrong value
-    var leftVelocity = vLeft.asDouble.clamp(-1.0, 1.0)
-    var rightVelocity = vRight.asDouble.clamp(-1.0, 1.0)
+    val maxTurnAngle = 3.0 // max Angle allowed for turning wheels in degrees (needed to avoid wheel wear / tire marks)
 
     init {
         addRequirements(Drivetrain)
@@ -37,16 +31,37 @@ class Swank(
     val blm = Drivetrain.swerveDrive.moduleMap["backLeft"] // todo exists?
     val brm = Drivetrain.swerveDrive.moduleMap["backRight"] // todo exists?
 
-    /**
-     * Resets the steering motors and brakes the steering motors.
-     */
-    private fun siezeSteering() {
-        // reset the steering angle and brake steering motors
-        Drivetrain.swerveDrive.modules.forEach {
-            it.setAngle(0.0)
-            it.angleMotor.setMotorBrake(true)
-        }
-    }
+//    private fun setSteering(leftVel: Double, rightVel: Double, brake: Boolean = false) {
+//        // get the difference between velocites
+//        val velDiff = leftVel - rightVel
+//        // determine how much to rotate all wheels by
+//        val rotation = velDiff * maxTurnAngle
+//        // rotate specific modules, some inverted
+//        /**
+//         * CASE 1
+//         * ---------------
+//         * left is 0.6
+//         * right is 0.5
+//         * difference is 0.6-0.5=0.1, more power to left, we are turning right
+//         * 0.1 * 3.0=0.3, that is rotation for all modules (ignoring sign)
+//         * if CCW rotation increases degrees, FL and BR must be rotated -
+//         * if CCW rotation increases degrees, FR and BL must be rotated +
+//         *
+//         * CASE 2
+//         * ---------------
+//         * left is 0.1
+//         * right is 0.9
+//         * difference is 0.1-0.9=-0.8, more power to right, we are turning left
+//         * -0.8*3.0=-2.4, that is rotation for all modules (ignoring sign)
+//         * if CCW rotation increases degrees, FL and BR must be rotated
+//         */
+//        flm?.setAngle(-1.0 * rotation)
+//        brm?.setAngle(-1.0 * rotation)
+//        frm?.setAngle(rotation)
+//        blm?.setAngle(rotation)
+//        // if brake, brake all steering motors
+//        Drivetrain.swerveDrive.modules.forEach { it.angleMotor.setMotorBrake(brake) }
+//    }
 
     /**
      * Stops the driving motors from moving.
@@ -78,14 +93,17 @@ class Swank(
 
     override fun initialize() {
         // disable steering
-         siezeSteering()
+//         setSteering(0.0) // todo
         // stop any driving
         siezeDriving()
     }
 
     override fun execute() {
+        // clamped just in case someone does a wrong value
+        var leftVelocity = vLeft.asDouble.clamp(-1.0, 1.0)
+        var rightVelocity = vRight.asDouble.clamp(-1.0, 1.0)
         // disable any steering
-        siezeSteering()
+//        setSteering(0.0) // todo
         // drive left and right motors
         if (slowMode.asBoolean) {
             leftVelocity *= slowMult
