@@ -1,5 +1,5 @@
-# 2025-REEFSCAPE-5970
-Swerve code for 5970, using the Swerve library YAGSL.
+# Beavertronics Swerve
+This is the Swerve code for 5970, using the Swerve library YAGSL.
 In addition to normal Swerve, this project also includes 
 Swank and Swar -- both normal Swar and four-steer Swar (FS-Swar).
 
