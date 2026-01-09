@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.robot.commands.*
 import frc.robot.commands.swerve.TeleopDriveCommand
 import frc.robot.commands.tests.MoveIntake
+import frc.robot.subsystems.Drivetrain
 
 /*
 Sets up the operator interface (controller inputs), as well as
@@ -31,7 +32,7 @@ object TeleOp {
         )
 
     init {
-        // Drivetrain.defaultCommand = teleOpDrive
+         Drivetrain.defaultCommand = teleOpDrive
     }
 
     /**
