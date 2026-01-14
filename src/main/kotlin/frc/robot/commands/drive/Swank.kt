@@ -26,10 +26,14 @@ class Swank(
     }
 
     // acquire all the swerve modules
-    val flm = Drivetrain.swerveDrive.moduleMap["frontLeft"] // todo exists?
-    val frm = Drivetrain.swerveDrive.moduleMap["frontRight"] // todo exists?
-    val blm = Drivetrain.swerveDrive.moduleMap["backLeft"] // todo exists?
-    val brm = Drivetrain.swerveDrive.moduleMap["backRight"] // todo exists?
+//    val flm = Drivetrain.swerveDrive.moduleMap["frontLeft"] // todo exists?
+    val flm = Drivetrain.swerveDrive.modules.get(0)
+//    val frm = Drivetrain.swerveDrive.moduleMap["frontRight"] // todo exists?
+    val frm = Drivetrain.swerveDrive.modules.get(1)
+//    val blm = Drivetrain.swerveDrive.moduleMap["backLeft"] // todo exists?
+    val blm = Drivetrain.swerveDrive.modules.get(2)
+//    val brm = Drivetrain.swerveDrive.moduleMap["backRight"] // todo exists?
+    val brm = Drivetrain.swerveDrive.modules.get(3)
 
 //    private fun setSteering(leftVel: Double, rightVel: Double, brake: Boolean = false) {
 //        // get the difference between velocites

@@ -9,8 +9,9 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.robot.commands.*
+import frc.robot.commands.drive.Swank
 import frc.robot.commands.swerve.TeleopDriveCommand
-import frc.robot.commands.tests.MoveIntake
+//import frc.robot.commands.tests.MoveIntake
 import frc.robot.subsystems.Drivetrain
 
 /*
@@ -30,9 +31,16 @@ object TeleOp {
             { OI.toggleFieldOriented },
             { OI.slowMode }
         )
+    val swankDrive: Swank =
+        Swank(
+            { OI.driveForwards },
+            { OI.swankRight },
+            { OI.slowMode }
+        )
 
     init {
-         Drivetrain.defaultCommand = teleOpDrive
+        Drivetrain.defaultCommand = teleOpDrive
+//        Drivetrain.defaultCommand = swankDrive
     }
 
     /**
@@ -42,8 +50,8 @@ object TeleOp {
 //        OI.followTag.whileTrue(FollowAprilTag(1))
 //        OI.movement.whileTrue(Move(1.0, 0.0, 0.0))
 //        OI.driveCircle.whileTrue(Circle())
-        OI.lowerIntake.whileTrue(MoveIntake(DoubleSolenoid.Value.kForward))
-        OI.raiseIntake.whileTrue(MoveIntake(DoubleSolenoid.Value.kReverse))
+//        OI.lowerIntake.whileTrue(MoveIntake(DoubleSolenoid.Value.kForward))
+//        OI.raiseIntake.whileTrue(MoveIntake(DoubleSolenoid.Value.kReverse))
     }
 
     /**
@@ -117,6 +125,7 @@ object TeleOp {
         val driveForwards get() = driverController.leftY.processInput()
         val driveStrafe get() = driverController.leftX.processInput()
         val rotateRobot get() = driverController.rightX.processInput()
+        val swankRight get() = driverController.rightY.processInput()
         val slowMode get() = driverController.leftTrigger().asBoolean
         val toggleFieldOriented get() = driverController.rightTrigger().asBoolean
         //===== SUBSYSTEMS =====//
