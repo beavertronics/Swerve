@@ -1,4 +1,4 @@
-package frc.robot.commands.tests
+package frc.robot.commands
 
 import beaverlib.utils.Sugar.clamp
 import beaverlib.utils.Sugar.roundTo
@@ -11,7 +11,13 @@ import frc.robot.subsystems.Vision
 import org.photonvision.targeting.PhotonTrackedTarget
 import kotlin.random.Random
 
-class AlignToTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Command() {
+class AlignToTag(
+    val aprilTagID: Int,
+    val speedLimit: Double = 1.0,
+    val rotateSetpoint: Double = 0.0, // degrees
+    val xSetpoint: Double = 0.0, // meters, make sure to consider robot dimensions
+    val ySetpoint: Double = 0.0 // meters
+) : Command() {
     var firstCalculation = false
     val rotateKP = 0.45 // 0.25
     val rotateKD = 0.1
@@ -25,13 +31,6 @@ class AlignToTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Command() 
     // add the needed subsystems to requirements
     init {
         addRequirements(Drivetrain)
-        rotatePID.reset()
-        xPID.reset()
-        yPID.reset()
-        rotatePID.setpoint = 0.0 // degrees
-        xPID.setpoint = 2.0 // meters, robot is ~1 meter so should be goal distance + 1 meter
-        yPID.setpoint = 0.0 // meters
-
         // give it some deadzone
         rotatePID.setTolerance(0.1) // degrees // NOTE NOT USED FOR DEADZONE ONLY FOR FINISH!
         xPID.setTolerance(0.15) // meters
@@ -42,6 +41,7 @@ class AlignToTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Command() 
     // get the correct april tag
     var desiredTag : PhotonTrackedTarget? = null
     override fun initialize() {
+        // set up vision
         println("Aligning to tag: " + aprilTagID)
         println("Listener name: " + listenerName)
         Vision.listeners.add(listenerName) { result, _ ->
@@ -50,6 +50,15 @@ class AlignToTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Command() 
                 desiredTag = desiredTagA.first()
             }
         }
+
+        // reset things
+        rotatePID.reset()
+        xPID.reset()
+        yPID.reset()
+        rotatePID.setpoint = rotateSetpoint
+        xPID.setpoint = xSetpoint
+        yPID.setpoint = ySetpoint
+        firstCalculation = false
     }
 
     // align with tag in respects to X, Y, and rotation

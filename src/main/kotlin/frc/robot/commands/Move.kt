@@ -1,4 +1,4 @@
-package frc.robot.commands.tests
+package frc.robot.commands
 
 import edu.wpi.first.math.controller.HolonomicDriveController
 import edu.wpi.first.math.controller.PIDController
@@ -21,8 +21,10 @@ class Move(val x: Double = 0.0, val y: Double = 0.0, val rotateRobot: Double = 0
         Pose2d(
             `according to all known laws of aviation, our robot should not be able to fly`.robotPose.x + x,
             `according to all known laws of aviation, our robot should not be able to fly`.robotPose.y + y,
-            `according to all known laws of aviation, our robot should not be able to fly`.robotPose.rotation + Rotation2d(rotateRobot)
+            `according to all known laws of aviation, our robot should not be able to fly`.robotPose.rotation + Rotation2d(
+                rotateRobot
             )
+        )
         , 0.0)
 
     // movement controller
