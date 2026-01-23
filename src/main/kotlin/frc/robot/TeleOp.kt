@@ -42,7 +42,7 @@ object TeleOp {
             { OI.C_LY },
             { OI.C_LX },
             { OI.C_RX },
-            { OI.C_LT },
+            { OI.C_LB },
             { OI.LJS_Y },
             { OI.LJS_X },
             { OI.RJS_X },
@@ -137,15 +137,16 @@ object TeleOp {
          * Values for inputs go here
          */
         //===== DRIVETRAIN =====//
-        val C_LY get() = xboxController.leftY.processInput()
         val C_LX get() = xboxController.leftX.processInput()
+        val C_LY get() = xboxController.leftY.processInput()
         val C_RX get() = xboxController.rightX.processInput()
+        val C_LB get() = xboxController.leftBumper().asBoolean
+        val C_LT get() = xboxController.leftTrigger().asBoolean
+        val C_RT get() = xboxController.rightTrigger().asBoolean
         val LJS_X get() = leftJoystick.x.processInput()
         val LJS_Y get() = leftJoystick.y.processInput()
         val RJS_X get() = rightJoystick.x.processInput()
         val RJS_Y get() = rightJoystick.y.processInput()
-        val C_LT get() = xboxController.leftTrigger().asBoolean
-        val C_RT get() = xboxController.rightTrigger().asBoolean
         //===== SUBSYSTEMS =====//
     }
 }
