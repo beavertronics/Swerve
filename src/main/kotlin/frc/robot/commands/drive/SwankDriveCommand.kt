@@ -12,7 +12,7 @@ import java.util.function.DoubleSupplier
  * @param vRight the controller input for right drive
  * @param slowMode the toggle for enabling slow mode
  */
-class Swank(
+class SwankDriveCommand(
     var vLeft: DoubleSupplier,
     var vRight: DoubleSupplier,
     val slowMode: BooleanSupplier

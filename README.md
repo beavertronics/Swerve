@@ -1,7 +1,13 @@
 # Beavertronics Swerve
 This is the Swerve code for 5970, using the Swerve library YAGSL.
-In addition to normal Swerve, this project also includes 
-Swank and Swar -- both normal Swar and four-steer Swar (FS-Swar).
+This project includes the following:
+- Swerve
+- Swank (Swerve-tank)
+- Swar (Swerve-car), and FS-Swar (foursteer-swerve-car0
+- Vision 
+- Additional "child mode" drive command
+- Example pneumatics subsystem
+
 
 ## To update Beaverlib, run this in terminal:
 - `git submodule update --init --recursive --remote`

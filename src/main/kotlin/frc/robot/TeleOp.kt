@@ -2,15 +2,15 @@ package frc.robot
 
 import kotlin.math.*
 import beaverlib.utils.Sugar.within
-import edu.wpi.first.wpilibj.DoubleSolenoid
 import edu.wpi.first.wpilibj.GenericHID
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
-import frc.robot.commands.*
-import frc.robot.commands.drive.Swank
-import frc.robot.commands.swerve.TeleopDriveCommand
+import frc.robot.commands.drive.ChildModeDriveCommand
+import frc.robot.commands.drive.SwankDriveCommand
+import frc.robot.commands.drive.TeleopDriveCommand
 //import frc.robot.commands.tests.MoveIntake
 import frc.robot.subsystems.Drivetrain
 
@@ -25,22 +25,35 @@ setting up the commands for running the drivetrain and the subsystems
 object TeleOp {
     val teleOpDrive: TeleopDriveCommand =
         TeleopDriveCommand(
-            { OI.driveForwards },
-            { OI.driveStrafe },
-            { OI.rotateRobot },
-            { OI.toggleFieldOriented },
-            { OI.slowMode }
+            { OI.C_LY },
+            { OI.C_LX },
+            { OI.C_RX },
+            { OI.C_RT },
+            { OI.C_LT }
         )
-    val swankDrive: Swank =
-        Swank(
-            { OI.driveForwards },
-            { OI.swankRight },
-            { OI.slowMode }
+    val swankDrive: SwankDriveCommand =
+        SwankDriveCommand(
+            { OI.C_LY },
+            { OI.C_LX },
+            { OI.C_LT }
+        )
+    val childDrive: ChildModeDriveCommand =
+        ChildModeDriveCommand(
+            { OI.C_LY },
+            { OI.C_LX },
+            { OI.C_RX },
+            { OI.C_LT },
+            { OI.LJS_Y },
+            { OI.LJS_X },
+            { OI.RJS_X },
+            { OI.C_RT },
+            { OI.C_LT }
+
         )
 
     init {
+        // SWAP THIS WITH WHATEVER COMMAND YOU WANT TO BE DRIVING THE ROBOT!
         Drivetrain.defaultCommand = teleOpDrive
-//        Drivetrain.defaultCommand = swankDrive
     }
 
     /**
@@ -59,7 +72,9 @@ object TeleOp {
      * getting inputs from controllers and whatnot.
      */
     object OI : SubsystemBase() {
-        val driverController = CommandXboxController(0)
+        val xboxController = CommandXboxController(0)
+        val leftJoystick = CommandJoystick(1)
+        val rightJoystick = CommandJoystick(2)
 
         /**
          * Allows you to tweak controller inputs (ie get rid of deadzone, make input more sensitive by squaring or cubing it, etc).
@@ -122,19 +137,16 @@ object TeleOp {
          * Values for inputs go here
          */
         //===== DRIVETRAIN =====//
-        val driveForwards get() = driverController.leftY.processInput()
-        val driveStrafe get() = driverController.leftX.processInput()
-        val rotateRobot get() = driverController.rightX.processInput()
-        val swankRight get() = driverController.rightY.processInput()
-        val slowMode get() = driverController.leftTrigger().asBoolean
-        val toggleFieldOriented get() = driverController.rightTrigger().asBoolean
+        val C_LY get() = xboxController.leftY.processInput()
+        val C_LX get() = xboxController.leftX.processInput()
+        val C_RX get() = xboxController.rightX.processInput()
+        val LJS_X get() = leftJoystick.x.processInput()
+        val LJS_Y get() = leftJoystick.y.processInput()
+        val RJS_X get() = rightJoystick.x.processInput()
+        val RJS_Y get() = rightJoystick.y.processInput()
+        val C_LT get() = xboxController.leftTrigger().asBoolean
+        val C_RT get() = xboxController.rightTrigger().asBoolean
         //===== SUBSYSTEMS =====//
-        val followTag get() = driverController.leftBumper()
-//        val movement get() = driverController.leftBumper()
-        val driveCircle get() = driverController.rightBumper()
-
-        val lowerIntake get() = driverController.povDown()
-        val raiseIntake get() = driverController.povUp()
     }
 }
 

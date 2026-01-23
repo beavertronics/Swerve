@@ -1,4 +1,4 @@
-package frc.robot.commands.tests.vision
+package frc.robot.commands.vision
 
 import beaverlib.utils.Sugar.clamp
 import edu.wpi.first.math.controller.PIDController

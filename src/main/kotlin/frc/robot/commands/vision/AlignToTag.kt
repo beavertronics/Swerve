@@ -1,4 +1,4 @@
-package frc.robot.commands
+package frc.robot.commands.vision
 
 import beaverlib.utils.Sugar.clamp
 import beaverlib.utils.Sugar.roundTo
