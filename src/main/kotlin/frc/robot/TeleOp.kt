@@ -53,7 +53,7 @@ object TeleOp {
 
     init {
         // SWAP THIS WITH WHATEVER COMMAND YOU WANT TO BE DRIVING THE ROBOT!
-        Drivetrain.defaultCommand = teleOpDrive
+        Drivetrain.defaultCommand = childDrive
     }
 
     /**
