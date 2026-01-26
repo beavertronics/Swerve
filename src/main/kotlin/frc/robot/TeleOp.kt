@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.robot.commands.drive.ChildModeDriveCommand
 import frc.robot.commands.drive.SwankDriveCommand
 import frc.robot.commands.drive.TeleopDriveCommand
+import frc.robot.commands.vision.FollowAprilTag
 //import frc.robot.commands.tests.MoveIntake
 import frc.robot.subsystems.Drivetrain
 
@@ -28,39 +29,39 @@ object TeleOp {
             { OI.C_LY },
             { OI.C_LX },
             { OI.C_RX },
-            { OI.C_RT },
-            { OI.C_LT }
+            { OI.C_RT.asBoolean },
+            { OI.C_LT.asBoolean }
         )
     val swankDrive: SwankDriveCommand =
         SwankDriveCommand(
             { OI.C_LY },
             { OI.C_LX },
-            { OI.C_LT }
+            { OI.C_LT.asBoolean }
         )
     val childDrive: ChildModeDriveCommand =
         ChildModeDriveCommand(
             { OI.C_LY },
             { OI.C_LX },
             { OI.C_RX },
-            { OI.C_LB },
+            { OI.C_LB.asBoolean },
             { OI.LJS_Y },
             { OI.LJS_X },
             { OI.RJS_X },
-            { OI.C_RT },
-            { OI.C_LT }
+            { OI.C_RT.asBoolean },
+            { OI.C_LT.asBoolean }
 
         )
 
     init {
         // SWAP THIS WITH WHATEVER COMMAND YOU WANT TO BE DRIVING THE ROBOT!
-        Drivetrain.defaultCommand = childDrive
+        Drivetrain.defaultCommand = teleOpDrive
     }
 
     /**
      * configures things to run on specific inputs
      */
     fun configureBindings() {
-//        OI.followTag.whileTrue(FollowAprilTag(1))
+        OI.C_LB.whileTrue(FollowAprilTag(1))
 //        OI.movement.whileTrue(Move(1.0, 0.0, 0.0))
 //        OI.driveCircle.whileTrue(Circle())
 //        OI.lowerIntake.whileTrue(MoveIntake(DoubleSolenoid.Value.kForward))
@@ -140,9 +141,9 @@ object TeleOp {
         val C_LX get() = xboxController.leftX.processInput()
         val C_LY get() = xboxController.leftY.processInput()
         val C_RX get() = xboxController.rightX.processInput()
-        val C_LB get() = xboxController.leftBumper().asBoolean
-        val C_LT get() = xboxController.leftTrigger().asBoolean
-        val C_RT get() = xboxController.rightTrigger().asBoolean
+        val C_LB get() = xboxController.leftBumper()
+        val C_LT get() = xboxController.leftTrigger()
+        val C_RT get() = xboxController.rightTrigger()
         val LJS_X get() = leftJoystick.x.processInput()
         val LJS_Y get() = leftJoystick.y.processInput()
         val RJS_X get() = rightJoystick.x.processInput()
