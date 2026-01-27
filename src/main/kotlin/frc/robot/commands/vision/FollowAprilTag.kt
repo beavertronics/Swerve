@@ -94,6 +94,7 @@ class FollowAprilTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Comman
 
     override fun end(interrupted: Boolean) {
         Vision.listeners.remove("FollowTag")
+        Drivetrain.stop()
         return
     }
 }

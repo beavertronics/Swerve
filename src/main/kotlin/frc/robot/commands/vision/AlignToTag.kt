@@ -125,6 +125,7 @@ class AlignToTag(
 
     override fun end(interrupted: Boolean) {
         Vision.listeners.remove(listenerName)
+        Drivetrain.stop()
         return
     }
 }

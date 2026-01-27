@@ -100,6 +100,11 @@ object Drivetrain : SubsystemBase() {
         }
 
         /**
+         * Stops the robot from driving.
+         */
+        fun stop() { drive(ChassisSpeeds()) }
+
+        /**
          * Return SysID command for drive motors from YAGSL
          * @return A command that SysIDs the drive motors.
          */
