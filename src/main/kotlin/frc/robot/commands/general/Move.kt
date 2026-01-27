@@ -2,10 +2,7 @@ package frc.robot.commands.general
 
 import beaverlib.utils.Sugar.clamp
 import edu.wpi.first.math.controller.PIDController
-import edu.wpi.first.math.geometry.Pose2d
-import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Transform2d
-import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.wpilibj2.command.Command
 import frc.robot.subsystems.Drivetrain
@@ -14,9 +11,9 @@ import frc.robot.subsystems.`according to all known laws of aviation, our robot 
 /**
  * Moves the robot in x, y, and rotation.
  * @param transform A Transform2D which has the movement in X, Y, and rotation.
- * @param speedLimit the max speed at which to move the robot.
+ * @param speedLimit the max speed at which to move the robot, in m/s.
  */
-class Move(val transform: Transform2d, val speedLimit: Double) : Command() {
+class Move(val transform: Transform2d, val speedLimit: Double = 1.0) : Command() {
     init {
         addRequirements(Drivetrain)
     }
@@ -59,9 +56,9 @@ class Move(val transform: Transform2d, val speedLimit: Double) : Command() {
         // drive the robot
         Drivetrain.drive(
             ChassisSpeeds(
-                xDrive.clamp(-1.0, 1.0) * speedLimit,
-                yDrive.clamp(-1.0, 1.0) * speedLimit,
-                omega.clamp(-1.0, 1.0) * speedLimit
+                xDrive.clamp(-speedLimit, speedLimit),
+                yDrive.clamp(-speedLimit, speedLimit),
+                omega.clamp(-speedLimit, speedLimit)
             )
         )
     }

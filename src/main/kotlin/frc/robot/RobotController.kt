@@ -1,5 +1,7 @@
 package frc.robot
 
+import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.math.geometry.Transform2d
 import edu.wpi.first.wpilibj.TimedRobot
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
@@ -7,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
+import frc.robot.commands.general.Move
 import frc.robot.commands.vision.AlignToTag
 import frc.robot.commands.tests.Wait
 //import frc.robot.subsystems.Pneumatics
@@ -28,7 +31,7 @@ object RobotController : TimedRobot() {
     // true if running manual autos when enabled
     // false if running pathplanner autos when enabled
     var manualAutos = true
-    val manualAutoCommands: Map<String,Command> = mapOf()
+//    val manualAutoCommands: Map<String,Command> = mapOf()
     var selectedManualAuto: Command? = null
     val ManualAutoChooser = SendableChooser<Command>()
     var selectedPathAuto: Command? = null
@@ -47,7 +50,7 @@ object RobotController : TimedRobot() {
 
         // load manual autos
         ManualAutoChooser.setDefaultOption("no auto", Commands.none())
-        ManualAutoChooser.addOption("Align to tag",
+        ManualAutoChooser.addOption("Align to multiple tags",
             SequentialCommandGroup(
                     AlignToTag(2),
                     Wait(2.0),
@@ -56,6 +59,16 @@ object RobotController : TimedRobot() {
                     AlignToTag(4)
                 )
         )
+        ManualAutoChooser.addOption("1 meter square",
+            SequentialCommandGroup(
+                Move(Transform2d(1.0, 0.0, Rotation2d(0.0, 0.0))),
+                Wait(2.0),
+                Move(Transform2d(0.0, 1.0, Rotation2d(0.0, 0.0))),
+                Wait(2.0),
+                Move(Transform2d(-1.0, 0.0, Rotation2d(0.0, 0.0))),
+                Wait(2.0),
+                Move(Transform2d(0.0, -1.0, Rotation2d(0.0, 0.0)))
+            ))
         SmartDashboard.putData("Manual auto choices", ManualAutoChooser)
         // load pathplanner autos
 //        Phatplanner.autoChooser.setDefaultOption("no auto", Commands.none())
