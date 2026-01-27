@@ -2,9 +2,9 @@
 This is the command-based swerve code for 5970, using the swerve library YAGSL.
 This project includes the following:
 - Swerve
+- Vision
 - Swank (Swerve-tank)
 - Swar (Swerve-car), and FS-Swar (Foursteer-swerve-car)
-- Vision 
 - Additional "child mode" drive command
 - Example pneumatics subsystem
 

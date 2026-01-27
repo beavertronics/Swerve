@@ -40,16 +40,17 @@ object `according to all known laws of aviation, our robot should not be able to
     }
 
     override fun periodic() {
-        val swervePose = Drivetrain.swerveDrive.pose
-        val visionTransform = Transform2d(visionPose.x, visionPose.y, visionPose.rotation)
-        val swerveTransform = Transform2d(swervePose.x, swervePose.y, swervePose.rotation)
-        robotPose = robotPose.plus(visionTransform)
-        robotPose = robotPose.plus(swerveTransform)
-        if (robotPose != null) {
-            SmartDashboard.putNumber("robot pose X", robotPose.x)
-            SmartDashboard.putNumber("robot pose Y", robotPose.y)
-            SmartDashboard.putNumber("robot rotation", robotPose.rotation.degrees)
-        }
+        robotPose = Drivetrain.swerveDrive.pose
+//        val swervePose = Drivetrain.swerveDrive.pose
+//        val visionTransform = Transform2d(visionPose.x, visionPose.y, visionPose.rotation)
+//        val swerveTransform = Transform2d(swervePose.x, swervePose.y, swervePose.rotation)
+//        robotPose = robotPose.plus(visionTransform)
+//        robotPose = robotPose.plus(swerveTransform)
+//        if (robotPose != null) {
+//            SmartDashboard.putNumber("robot pose X", robotPose.x)
+//            SmartDashboard.putNumber("robot pose Y", robotPose.y)
+//            SmartDashboard.putNumber("robot rotation", robotPose.rotation.degrees)
+//        }
 
         Vision.setAllCameraReferences(robotPose)
     }
