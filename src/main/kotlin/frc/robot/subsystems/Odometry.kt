@@ -32,7 +32,7 @@ object `according to all known laws of aviation, our robot should not be able to
         setVisionMeasurementStdDevs(3.0, 4.0, 5.0)
 
         // sets the offset of the gyro
-        Drivetrain.swerveDrive.setGyroOffset(Rotation3d(0.0, 0.0, PI)) // TODO
+//        Drivetrain.swerveDrive.setGyroOffset(Rotation3d(0.0, 0.0, PI)) // TODO
     }
 
     // pose of the robot
