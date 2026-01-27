@@ -62,12 +62,12 @@ object RobotController : TimedRobot() {
         ManualAutoChooser.addOption("1 meter square",
             SequentialCommandGroup(
                 Move(Transform2d(1.0, 0.0, Rotation2d(0.0, 0.0))),
-                Wait(2.0),
-                Move(Transform2d(0.0, 1.0, Rotation2d(0.0, 0.0))),
-                Wait(2.0),
-                Move(Transform2d(-1.0, 0.0, Rotation2d(0.0, 0.0))),
-                Wait(2.0),
-                Move(Transform2d(0.0, -1.0, Rotation2d(0.0, 0.0)))
+//                Wait(2.0),
+//                Move(Transform2d(0.0, 1.0, Rotation2d(0.0, 0.0))),
+//                Wait(2.0),
+//                Move(Transform2d(-1.0, 0.0, Rotation2d(0.0, 0.0))),
+//                Wait(2.0),
+//                Move(Transform2d(0.0, -1.0, Rotation2d(0.0, 0.0)))
             ))
         SmartDashboard.putData("Manual auto choices", ManualAutoChooser)
         // load pathplanner autos

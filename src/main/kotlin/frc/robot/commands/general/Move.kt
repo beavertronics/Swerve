@@ -17,12 +17,12 @@ class Move(val transform: Transform2d, val speedLimit: Double = 1.0) : Command()
     init {
         addRequirements(Drivetrain)
     }
-    val xKP = 0.0
+    val xKP = 1.45
     val xKD = 0.0
-    val ykP = 0.0
+    val ykP = 1.45
     val yKD = 0.0
-    val oKP = 0.0
-    val oKD = 0.0
+    val oKP = 0.45
+    val oKD = 0.1
     // create all PID controllers
     val xPID = PIDController(xKP, 0.0, xKD)
     val yPID = PIDController(ykP, 0.0, yKD)
@@ -41,14 +41,17 @@ class Move(val transform: Transform2d, val speedLimit: Double = 1.0) : Command()
         // set the setpoints for PID
         xPID.setpoint = goal.x
         yPID.setpoint = goal.y
-        oPID.setpoint = goal.rotation.degrees
+        oPID.setpoint = goal.rotation.radians
+        // disable vision updating odometry
+        `according to all known laws of aviation, our robot should not be able to fly`.doEnableVisionOdometry(false)
     }
 
     override fun execute() {
         // calculate the errors
-        val xError = goal.x - original.x
-        val yError = goal.y - original.y
-        val oError = (goal.rotation - original.rotation).degrees
+        val current = `according to all known laws of aviation, our robot should not be able to fly`.pose
+        val xError = goal.x - current.x
+        val yError = goal.y - current.y
+        val oError = (goal.rotation - current.rotation).radians
         val xDrive = xPID.calculate(xError)
         val yDrive = yPID.calculate(yError)
         val omega = oPID.calculate(oError)
@@ -69,5 +72,6 @@ class Move(val transform: Transform2d, val speedLimit: Double = 1.0) : Command()
 
     override fun end(interrupted: Boolean) {
         Drivetrain.stop()
+        `according to all known laws of aviation, our robot should not be able to fly`.doEnableVisionOdometry(true)
     }
 }
