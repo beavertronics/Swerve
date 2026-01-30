@@ -1,5 +1,8 @@
 package frc.robot
 
+import com.pathplanner.lib.auto.AutoBuilder
+import com.pathplanner.lib.commands.PathPlannerAuto
+import com.pathplanner.lib.path.PathPlannerPath
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Transform2d
 import edu.wpi.first.wpilibj.TimedRobot
@@ -12,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import frc.robot.commands.general.Move
 import frc.robot.commands.vision.AlignToTag
 import frc.robot.commands.tests.Wait
+import frc.robot.subsystems.Phatplanner
 //import frc.robot.subsystems.Pneumatics
 //import frc.robot.subsystems.Phatplanner
 import frc.robot.subsystems.`according to all known laws of aviation, our robot should not be able to fly`
@@ -30,7 +34,7 @@ object RobotController : TimedRobot() {
     val commandScheduler = CommandScheduler.getInstance()
     // true if running manual autos when enabled
     // false if running pathplanner autos when enabled
-    var manualAutos = true
+    var manualAutos = false
 //    val manualAutoCommands: Map<String,Command> = mapOf()
     var selectedManualAuto: Command? = null
     val ManualAutoChooser = SendableChooser<Command>()
@@ -43,7 +47,7 @@ object RobotController : TimedRobot() {
         // all subsystems
         TeleOp
         `according to all known laws of aviation, our robot should not be able to fly`
-//        Pneumatics
+        Phatplanner
 
         // start drive cam // todo replaced by vision feed
         // CameraServer.startAutomaticCapture(0)
@@ -71,8 +75,8 @@ object RobotController : TimedRobot() {
             ))
         SmartDashboard.putData("Manual auto choices", ManualAutoChooser)
         // load pathplanner autos
-//        Phatplanner.autoChooser.setDefaultOption("no auto", Commands.none())
-//        SmartDashboard.putData("Pathplanner auto choices", Phatplanner.autoChooser)
+        Phatplanner.autoChooser.setDefaultOption("no auto", Commands.none())
+        SmartDashboard.putData("Pathplanner auto choices", Phatplanner.autoChooser)
 
     }
 
@@ -91,7 +95,7 @@ object RobotController : TimedRobot() {
         }
         else {
             println("using pathplanner auto")
-//            selectedPathAuto = Phatplanner.getAutonomousCommand()
+            selectedPathAuto = Phatplanner.getAutonomousCommand()
             selectedPathAuto?.schedule()
             println("Auto selected: " + selectedPathAuto)
         }

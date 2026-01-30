@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.robot.commands.drive.ChildModeDriveCommand
 import frc.robot.commands.drive.SwankDriveCommand
 import frc.robot.commands.drive.TeleopDriveCommand
+import frc.robot.commands.general.Lock
 import frc.robot.commands.vision.FollowAprilTag
 //import frc.robot.commands.tests.MoveIntake
 import frc.robot.subsystems.Drivetrain
@@ -62,6 +63,7 @@ object TeleOp {
      */
     fun configureBindings() {
         OI.C_LB.whileTrue(FollowAprilTag(1))
+        OI.C_RB.whileTrue(Lock())
 //        OI.movement.whileTrue(Move(1.0, 0.0, 0.0))
 //        OI.driveCircle.whileTrue(Circle())
 //        OI.lowerIntake.whileTrue(MoveIntake(DoubleSolenoid.Value.kForward))
@@ -142,6 +144,7 @@ object TeleOp {
         val C_LY get() = xboxController.leftY.processInput()
         val C_RX get() = xboxController.rightX.processInput()
         val C_LB get() = xboxController.leftBumper()
+        val C_RB get() = xboxController.rightBumper()
         val C_LT get() = xboxController.leftTrigger()
         val C_RT get() = xboxController.rightTrigger()
         val LJS_X get() = leftJoystick.x.processInput()
