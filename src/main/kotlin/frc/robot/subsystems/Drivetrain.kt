@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.wpilibj.Filesystem
 import edu.wpi.first.wpilibj2.command.Command
-8import edu.wpi.first.wpilibj2.command.Commands
+import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine
 import swervelib.SwerveDrive
@@ -109,15 +109,15 @@ object Drivetrain : SubsystemBase() {
          * Return SysID command for drive motors from YAGSL
          * @return A command that SysIDs the drive motors.
          */
-        fun sysIdDriveMotor(): Command? {
-            return SwerveDriveTest.generateSysIdCommand(
-                SwerveDriveTest.setDriveSysIdRoutine(
-                    SysIdRoutine.Config(),
-                    this,
-                    swerveDrive, 12.0),
-                3.0, 5.0, 3.0
-            )
-        }
+//        fun sysIdDriveMotor(): Command? {
+//            return SwerveDriveTest.generateSysIdCommand(
+//                SwerveDriveTest.setDriveSysIdRoutine(
+//                    SysIdRoutine.Config(),
+//                    this,
+//                    swerveDrive, 12.0),
+//                3.0, 5.0, 3.0
+//            )
+//        }
 
         /**
          * Locks the robot in place, stopping it from moving. Is disabled by driver inputs.

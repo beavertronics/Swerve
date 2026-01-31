@@ -89,7 +89,7 @@ test {
  * simulation stuff
  */
 // set up stuff for simulation with Autodesk synthesis
-def includeDesktopSupport = true
+includeDesktopSupport = true
 wpi.sim.environment.put("HALSIMWS_HOST", "127.0.0.1")
 wpi.sim.addWebsocketsServer().defaultEnabled = true
 
