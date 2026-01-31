@@ -5,15 +5,14 @@ import beaverlib.utils.Sugar.within
 import edu.wpi.first.wpilibj.GenericHID
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.robot.commands.drive.ChildModeDriveCommand
 import frc.robot.commands.drive.SwankDriveCommand
 import frc.robot.commands.drive.TeleopDriveCommand
-import frc.robot.commands.general.Lock
 import frc.robot.commands.vision.FollowAprilTag
-//import frc.robot.commands.tests.MoveIntake
 import frc.robot.subsystems.Drivetrain
 
 /*
@@ -63,7 +62,7 @@ object TeleOp {
      */
     fun configureBindings() {
         OI.C_LB.whileTrue(FollowAprilTag(1))
-        OI.C_RB.whileTrue(Lock())
+//        OI.C_RB.whileTrue(InstantCommand(Drivetrain::lock))
 //        OI.movement.whileTrue(Move(1.0, 0.0, 0.0))
 //        OI.driveCircle.whileTrue(Circle())
 //        OI.lowerIntake.whileTrue(MoveIntake(DoubleSolenoid.Value.kForward))
