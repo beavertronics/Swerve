@@ -13,7 +13,7 @@ This project includes the following:
 - `git submodule update --init --recursive --remote`
 
 ## Instructions / information
-- [Instructions on Swerve setup](/doc/Swerve.md)
-- [Information on Swank](/doc/Swank.md)
-- [Information on Swar and FS-Swar](/doc/Swar.md)
+- [Instructions on Swerve setup](/docs/Swerve.md)
+- [Information on Swank](/docs/Swank.md)
+- [Information on Swar and FS-Swar](/docs/Swar.md)
 - [Information on child mode]
