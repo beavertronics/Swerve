@@ -1,8 +1,5 @@
 package frc.robot
 
-import com.pathplanner.lib.auto.AutoBuilder
-import com.pathplanner.lib.commands.PathPlannerAuto
-import com.pathplanner.lib.path.PathPlannerPath
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Transform2d
 import edu.wpi.first.wpilibj.TimedRobot
@@ -65,13 +62,7 @@ object RobotController : TimedRobot() {
         )
         ManualAutoChooser.addOption("1 meter square",
             SequentialCommandGroup(
-                Move(Transform2d(1.0, 0.0, Rotation2d(0.0, 0.0))),
-//                Wait(2.0),
-//                Move(Transform2d(0.0, 1.0, Rotation2d(0.0, 0.0))),
-//                Wait(2.0),
-//                Move(Transform2d(-1.0, 0.0, Rotation2d(0.0, 0.0))),
-//                Wait(2.0),
-//                Move(Transform2d(0.0, -1.0, Rotation2d(0.0, 0.0)))
+                Move(Transform2d(1.0, 0.0, Rotation2d(0.0, 0.0)))
             ))
         SmartDashboard.putData("Manual auto choices", ManualAutoChooser)
         // load pathplanner autos
@@ -90,13 +81,13 @@ object RobotController : TimedRobot() {
         if (manualAutos) {
             println("Using manual auto")
             selectedManualAuto = ManualAutoChooser.selected
-            selectedManualAuto?.schedule()
+            commandScheduler.schedule(selectedManualAuto)
             println("Auto selected: " + selectedManualAuto)
         }
         else {
             println("using pathplanner auto")
             selectedPathAuto = Phatplanner.getAutonomousCommand()
-            selectedPathAuto?.schedule()
+            commandScheduler.schedule(selectedPathAuto)
             println("Auto selected: " + selectedPathAuto)
         }
     }
