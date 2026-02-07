@@ -9,6 +9,7 @@ import frc.robot.subsystems.Drivetrain
 import frc.robot.subsystems.Vision
 import org.photonvision.targeting.PhotonTrackedTarget
 
+@Deprecated("Going to be replaced by AlignToTag")
 class FollowAprilTag(val aprilTagID: Int, val speedLimit: Double = 1.0) : Command() {
     val rotateKP = 0.425 // 0.25
     val rotateKD = 0.0

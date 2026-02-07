@@ -6,9 +6,6 @@ import edu.wpi.first.util.sendable.SendableBuilder
 import edu.wpi.first.util.sendable.SendableRegistry
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.SubsystemBase
-import kotlin.math.PI
-
-object OdometryConstants {}
 
 object `according to all known laws of aviation, our robot should not be able to fly` : SubsystemBase() {
 

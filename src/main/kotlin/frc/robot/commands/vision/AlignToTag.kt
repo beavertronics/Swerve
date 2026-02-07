@@ -3,6 +3,7 @@ package frc.robot.commands.vision
 import beaverlib.utils.Sugar.clamp
 import beaverlib.utils.Sugar.roundTo
 import edu.wpi.first.math.controller.PIDController
+import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.wpilibj2.command.Command
@@ -11,12 +12,16 @@ import frc.robot.subsystems.Vision
 import org.photonvision.targeting.PhotonTrackedTarget
 import kotlin.random.Random
 
+/**
+ * Aligns to a given april tag with the set up FRC field.
+ * @param offsets the offsets from the april tag in a Pose2D.
+ * A Pose2d of (1.0, 0.0, Rotation2d(45)) will be 1 meter away from the tag and 45 degrees rotated from facing the tag.
+ * X and Y are in meters and rotation is in degrees.
+ */
 class AlignToTag(
     val aprilTagID: Int,
     val speedLimit: Double = 1.0,
-    val rotateSetpoint: Double = 0.0, // degrees
-    val xSetpoint: Double = 0.0, // meters, make sure to consider robot dimensions
-    val ySetpoint: Double = 0.0 // meters
+    val offsets: Pose2d = Pose2d(1.0, 0.0, Rotation2d())
 ) : Command() {
     var firstCalculation = false
     val rotateKP = 0.45 // 0.25
@@ -55,9 +60,9 @@ class AlignToTag(
         rotatePID.reset()
         xPID.reset()
         yPID.reset()
-        rotatePID.setpoint = rotateSetpoint
-        xPID.setpoint = xSetpoint
-        yPID.setpoint = ySetpoint
+        rotatePID.setpoint = offsets.rotation.degrees
+        xPID.setpoint = offsets.x
+        yPID.setpoint = offsets.y
         firstCalculation = false
     }
 
