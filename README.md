@@ -28,6 +28,9 @@ then reinstall it with the following function:
 For us specifically, the full command is:
 - `git submodule add https://github.com/beavertronics/beaverlib.git ./src/main/kotlin/beaverlib`
 
+JVM: corretto-17.0.14, found in .jdks under user account
+JVM: consider WPI jdk for simulation which is under wpilib/(year)/jdk
+
 ## Instructions / information
 - [Instructions on Swerve setup](/docs/Swerve.md)
 - [Information on Swank](/docs/Swank.md)

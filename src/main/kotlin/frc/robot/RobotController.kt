@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import frc.robot.commands.general.Move
 import frc.robot.commands.vision.AlignToTag
 import frc.robot.commands.tests.Wait
+import frc.robot.subsystems.Drivetrain
 import frc.robot.subsystems.Phatplanner
 import frc.robot.subsystems.`according to all known laws of aviation, our robot should not be able to fly`
 
@@ -27,12 +28,10 @@ import frc.robot.subsystems.`according to all known laws of aviation, our robot 
  */
 object RobotController : TimedRobot() {
     val commandScheduler = CommandScheduler.getInstance()
-    // true if running manual autos when enabled
-    // false if running pathplanner autos when enabled
-    var manualAutos = false
 //    val manualAutoCommands: Map<String,Command> = mapOf()
     var selectedManualAuto: Command? = null
     val ManualAutoChooser = SendableChooser<Command>()
+    val AutoTypeChooser = SendableChooser<Boolean>()
     var selectedPathAuto: Command? = null
 
     /**
@@ -60,12 +59,23 @@ object RobotController : TimedRobot() {
         )
         ManualAutoChooser.addOption("1 meter square",
             SequentialCommandGroup(
-                Move(Transform2d(1.0, 0.0, Rotation2d(0.0, 0.0)))
-            ))
+                Move(Transform2d(1.0, 0.0, Rotation2d(0.0, 0.0)))))
+        ManualAutoChooser.addOption("Drive Sys ID",
+            Drivetrain.sysIdDriveMotor()
+        )
+        ManualAutoChooser.addOption("Angle Sys ID",
+            Drivetrain.sysIdAngleMotorCommand()
+        )
         SmartDashboard.putData("Autos/Manual auto choices", ManualAutoChooser)
+
         // load pathplanner autos
         Phatplanner.autoChooser.setDefaultOption("no auto", Commands.none())
         SmartDashboard.putData("Autos/Pathplanner auto choices", Phatplanner.autoChooser)
+
+        // make thing to choose between pathplanner and manual autos
+        AutoTypeChooser.addOption("Pathplanner", true)
+        AutoTypeChooser.addOption("Manual", false)
+        SmartDashboard.putData("Autos/Auto chooser", AutoTypeChooser)
 
     }
 
@@ -76,7 +86,7 @@ object RobotController : TimedRobot() {
     override fun robotPeriodic() { commandScheduler.run() }
 
     override fun autonomousInit() {
-        if (manualAutos) {
+        if (!AutoTypeChooser.selected) {
             println("Using manual auto")
             selectedManualAuto = ManualAutoChooser.selected
             commandScheduler.schedule(selectedManualAuto)
@@ -96,8 +106,8 @@ object RobotController : TimedRobot() {
      */
     override fun teleopInit() {
         TeleOp.configureBindings()
-        if (manualAutos && selectedManualAuto != null) { selectedManualAuto?.cancel() }
-        else if (!manualAutos && selectedPathAuto != null) { selectedPathAuto?.cancel() }
+        if (!AutoTypeChooser.selected && selectedManualAuto != null) { selectedManualAuto?.cancel() }
+        else if (AutoTypeChooser.selected && selectedPathAuto != null) { selectedPathAuto?.cancel() }
     }
 
     /**
