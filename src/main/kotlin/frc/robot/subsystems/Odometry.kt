@@ -4,12 +4,12 @@ import edu.wpi.first.math.VecBuilder
 import edu.wpi.first.math.geometry.*
 import edu.wpi.first.util.sendable.SendableBuilder
 import edu.wpi.first.util.sendable.SendableRegistry
+import edu.wpi.first.wpilibj.smartdashboard.Field2d
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 
 object `according to all known laws of aviation, our robot should not be able to fly` : SubsystemBase() {
-
-    var updateVisionOdometry = true
 
     init {
         // Updates odometry whenever vision sees apriltag
@@ -19,7 +19,7 @@ object `according to all known laws of aviation, our robot should not be able to
                 if (!updateVisionOdometry) return
                 if (result.targets.isEmpty()) return
                 if (
-                    !result.multitagResult.isPresent && (result.targets.first().poseAmbiguity > 0.3)
+                    !result.multitagResult.isPresent && (result.targets.first.poseAmbiguity > 0.3)
                 )
                     return
                 val newPose = camera.getEstimatedRobotPose(result) ?: return
@@ -34,6 +34,13 @@ object `according to all known laws of aviation, our robot should not be able to
 
     // pose of the robot
     val pose get() = Drivetrain.swerveDrive.pose
+    var updateVisionOdometry = true
+    val field = Field2d()
+
+    override fun periodic() {
+        field.robotPose = pose
+        SmartDashboard.putData("Odometry/field", field)
+    }
 
     /**
      * Enables or disables the updating of the odometry with vision.
