@@ -1,6 +1,13 @@
 package beaverlib.utils.Units
 
+import beaverlib.utils.Units.Angular.AngleUnit
+import beaverlib.utils.Units.Angular.AngularAcceleration
+import beaverlib.utils.Units.Angular.AngularVelocity
+import beaverlib.utils.Units.Linear.Acceleration
+import beaverlib.utils.Units.Linear.VelocityUnit
 import edu.wpi.first.math.Num
+import frc.robot.beaverlib.utils.Units.Electrical.Energy
+import frc.robot.beaverlib.utils.Units.Electrical.Power
 
 @JvmInline
 value class Time (val asSeconds: Double){
@@ -14,8 +21,15 @@ value class Time (val asSeconds: Double){
 
     operator fun unaryMinus() = Time(-asSeconds)
     operator fun compareTo(other: Time) = asSeconds.compareTo(other.asSeconds)
-
     override fun toString(): String = "$asSeconds seconds"
+
+    operator fun times(other: AngularAcceleration) = AngularVelocity(asSeconds * other.asRadiansPerSecondSquared)
+    operator fun times(other: AngularVelocity) = AngleUnit(asSeconds * other.asRadiansPerSecond)
+    operator fun times(other : Power) = Energy(asSeconds * other.asWatts)
+    operator fun times(factor: Acceleration) = VelocityUnit(asSeconds * factor.asMetersPerSecondSquared)
+
+
+
 }
 operator fun Number.div(other: Time) = Frequency(this.toDouble()/other.asSeconds)
 

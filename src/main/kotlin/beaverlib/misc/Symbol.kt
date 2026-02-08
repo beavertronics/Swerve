@@ -8,6 +8,7 @@ import kotlin.random.Random
  * A class that is unique until you run out of String length.
  * Similar to [the JavaScript version](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol).
  */
+@Deprecated("Symbol is deprecated")
 class Symbol(val description: String?) {
     private constructor(id: String, description: String?) : this(description) {
         this.id = id

@@ -11,6 +11,7 @@ import beaverlib.utils.Units.Linear.DistanceUnit
 import beaverlib.utils.Units.Linear.meters
 import java.util.function.Supplier
 
+@Deprecated("PoseProvider is deprecated, please use the WPILib StructPublisher instead")
 /** Provides an orientation and position for the robot */
 interface PoseProvider : Sendable {
     /** Provides the pose as a WPIlib Pose2d */

@@ -4,12 +4,17 @@ import edu.wpi.first.math.geometry.Rotation2d
 import beaverlib.utils.Sugar.TAU
 import beaverlib.utils.Sugar.degreesToRadians
 import beaverlib.utils.Sugar.radiansToDegrees
+import beaverlib.utils.Units.Frequency
 import beaverlib.utils.Units.Linear.DistanceUnit
 import beaverlib.utils.Units.Time
 import kotlin.math.PI
+import kotlin.math.absoluteValue
+import kotlin.math.sign
 
 @JvmInline
 value class AngleUnit(val asRadians: Double) {
+    override fun toString(): String = "$asDegrees degrees"
+
     operator fun plus(other : AngleUnit) = AngleUnit(asRadians + other.asRadians)
     operator fun minus(other : AngleUnit) = AngleUnit(asRadians - other.asRadians)
     operator fun times(factor : Double) = AngleUnit(asRadians * factor)
@@ -19,6 +24,7 @@ value class AngleUnit(val asRadians: Double) {
     operator fun rem(other: Number) = AngleUnit(asRadians % other.toDouble())
     operator fun unaryPlus() = this
     operator fun unaryMinus() = AngleUnit(-asRadians)
+
     fun getCoterminal() : AngleUnit {
         var coterminalAngle = this % TAU
         if(coterminalAngle.asRadians < 0) return TAU.radians - coterminalAngle
@@ -31,11 +37,17 @@ value class AngleUnit(val asRadians: Double) {
     fun sec() = AngleUnit.sec(this)
     fun cot() = AngleUnit.tan(this)
 
+    fun angleDistanceTo(other: AngleUnit): AngleUnit {
+        val normal = this - other
+        val wrap = -((2 * PI).radians * normal.asRadians.sign - normal)
+//            println("normal: ${normal} wrap: ${wrap} sign: ${normal.sign} angleA: $angleA angleB: $angleB")
+        return if (normal.asRadians.absoluteValue < wrap.asRadians.absoluteValue) { normal }
+        else { wrap }
+    }
 
-
-    // Unit conversion math
-    operator fun div(other : Time) = AngularVelocity(asRadians/other.asSeconds)
-    operator fun times(other : DistanceUnit) = DistanceUnit(asRadians/other.asMeters)
+    fun angleDistanceWithin(maxError : AngleUnit, target : AngleUnit): Boolean {
+        return this.angleDistanceTo(target).asRadians.absoluteValue < maxError.asRadians
+    }
 
     /**
      * Taken from mean machines mean lib
@@ -86,9 +98,14 @@ value class AngleUnit(val asRadians: Double) {
         val left = AngleUnit(PI)
         /** An angle pointing down in standard position (3PI/2 radians) */
         val down = AngleUnit(PI*3/2)
-
-
     }
+
+    operator fun times(other : DistanceUnit) = DistanceUnit(asRadians * other.asMeters)
+    operator fun times(other : Frequency) = AngularVelocity(asRadians * other.asHertz)
+
+    operator fun div(other : Time) = AngularVelocity(asRadians/other.asSeconds)
+    operator fun div(other: AngleUnit) = asRadians / other.asRadians
+    operator fun div(other: AngularVelocity) = Time(asRadians / other.asRadiansPerSecond)
 }
 
 inline val Rotation2d.beaverRadians get() = AngleUnit(this.radians)
@@ -101,3 +118,9 @@ inline val Number.degrees get() = AngleUnit(this.toDouble().degreesToRadians())
 // destructors
 inline val AngleUnit.asRotations get() = asRadians / TAU
 inline val AngleUnit.asDegrees get() = asRadians.radiansToDegrees()
+
+/** Wraps the angle such that it is between 0 and 360 degrees, 0 degrees is the left side of the circle, and angle increases counterclockwise*/
+inline val AngleUnit.standardPosition: AngleUnit
+    get() =
+        if (this.asRadians >= 0.0) { AngleUnit(this.asRadians % (2 * PI)) }
+        else { AngleUnit((2 * PI) + (this.asRadians % (2 * PI))) }

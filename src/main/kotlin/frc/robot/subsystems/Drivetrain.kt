@@ -1,11 +1,16 @@
 package frc.robot.subsystems
 
 import beaverlib.utils.Units.Electrical.VoltageUnit
+import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
+import edu.wpi.first.math.kinematics.SwerveModuleState
+import edu.wpi.first.networktables.NetworkTableInstance
+import edu.wpi.first.networktables.StructArrayPublisher
+import edu.wpi.first.networktables.StructPublisher
 import edu.wpi.first.wpilibj.Filesystem
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
-import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine
 import swervelib.SwerveDrive
@@ -34,11 +39,41 @@ object Drivetrain : SubsystemBase() {
         /**
          * init file that runs on intialization of drivetrain class
          */
+
+        /** SwerveModuleStates publisher for swerve display */
+        var swerveStatePublisher: StructArrayPublisher<SwerveModuleState> =
+            NetworkTableInstance.getDefault()
+                .getStructArrayTopic("SwerveStates/swerveStates", SwerveModuleState.struct)
+                .publish()
+        var posePublisher: StructPublisher<Pose2d> =
+            NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose2d.struct)
+                .publish()
+//        var targetPosePublisher: StructPublisher<Pose2d> =
+//            NetworkTableInstance.getDefault().getStructTopic("TargetPose", Pose2d.struct).publish()
+
         init {
             // set up swerve drive :D
             SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH
             swerveDrive = SwerveParser(DriveConstants.DriveConfig).createSwerveDrive(DriveConstants.MaxSpeed)
+
+            swerveDrive.setCosineCompensator(false)
+            swerveDrive.setHeadingCorrection(false)
+            swerveDrive.setMotorIdleMode(false)
         }
+
+    override fun periodic() {
+        posePublisher.set(`according to all known laws of aviation, our robot should not be able to fly`.pose)
+        swerveStatePublisher.set(swerveDrive.states)
+//        val targetPoseProvider =
+//            TargetPoseProvider(FieldMapREBUILTWelded.teamHub.center, 2.meters, { 0.radians })
+//        targetPoseProvider.initialize()
+//        targetPosePublisher.set(targetPoseProvider.getPose())
+//        Vision.setAllCameraReferences(Pose3d(pose))
+        SmartDashboard.putNumber("Odometry/X", `according to all known laws of aviation, our robot should not be able to fly`.pose.x)
+        SmartDashboard.putNumber("Odometry/Y", `according to all known laws of aviation, our robot should not be able to fly`.pose.y)
+        SmartDashboard.putNumber("Odometry/HEADING", `according to all known laws of aviation, our robot should not be able to fly`.pose.rotation.radians)
+    }
+
         /**
          * Directly send voltage to the drive motors.
          * @param volts The voltage to send to the motors.
@@ -109,15 +144,18 @@ object Drivetrain : SubsystemBase() {
          * Return SysID command for drive motors from YAGSL
          * @return A command that SysIDs the drive motors.
          */
-//        fun sysIdDriveMotor(): Command? {
-//            return SwerveDriveTest.generateSysIdCommand(
-//                SwerveDriveTest.setDriveSysIdRoutine(
-//                    SysIdRoutine.Config(),
-//                    this,
-//                    swerveDrive, 12.0),
-//                3.0, 5.0, 3.0
-//            )
-//        }
+        fun sysIdDriveMotor(): Command? {
+            return SwerveDriveTest.generateSysIdCommand(
+                SwerveDriveTest.setDriveSysIdRoutine(
+                    SysIdRoutine.Config(),
+                    this,
+                    swerveDrive,
+                    12.0,
+                    true
+                ),
+                3.0, 5.0, 3.0
+            )
+        }
 
         /**
          * Locks the robot in place, stopping it from moving. Is disabled by driver inputs.

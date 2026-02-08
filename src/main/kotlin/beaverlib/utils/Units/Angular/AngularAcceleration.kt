@@ -1,11 +1,14 @@
 package beaverlib.utils.Units.Angular
 
 import beaverlib.utils.Sugar.TAU
+import beaverlib.utils.Units.Frequency
 import beaverlib.utils.Units.Linear.Acceleration
 import beaverlib.utils.Units.Linear.DistanceUnit
 import beaverlib.utils.Units.Time
 
 class AngularAcceleration (val asRadiansPerSecondSquared: Double) {
+    override fun toString(): String = "$asRotationsPerSecondSquared rotations/s^2"
+
     //Basic Math
     operator fun plus(other : AngularAcceleration) = AngularAcceleration(asRadiansPerSecondSquared + other.asRadiansPerSecondSquared)
     operator fun minus(other : AngularAcceleration) = AngularAcceleration(asRadiansPerSecondSquared - other.asRadiansPerSecondSquared)
@@ -15,9 +18,14 @@ class AngularAcceleration (val asRadiansPerSecondSquared: Double) {
     operator fun rem(other: AngularAcceleration) = AngularAcceleration(asRadiansPerSecondSquared % other.asRadiansPerSecondSquared)
     operator fun unaryPlus() = this
     operator fun unaryMinus() = AngularAcceleration(-asRadiansPerSecondSquared)
-    // Unit conversion math
-    operator fun times(other: Time) = AngularVelocity(asRadiansPerSecondSquared / other.asSeconds)
+
+    operator fun times(other: Time) = AngularVelocity(asRadiansPerSecondSquared * other.asSeconds)
+
     operator fun times(other: DistanceUnit) = Acceleration(asRadiansPerSecondSquared * other.asMeters)
+
+    operator fun div(other: Frequency) = AngularVelocity(asRadiansPerSecondSquared / other.asHertz)
+    operator fun div(other: AngularVelocity) = Frequency(asRadiansPerSecondSquared * other.asRadiansPerSecond)
+    operator fun div(other: AngularAcceleration) = asRadiansPerSecondSquared * other.asRadiansPerSecondSquared
 
 }
 // Constructors
@@ -28,3 +36,4 @@ inline val Number.RPMSquared get() = AngularAcceleration((this.toDouble()*TAU)/6
 
 inline val AngularAcceleration.asRotationsPerSecondSquared get() = asRadiansPerSecondSquared / TAU
 inline val AngularAcceleration.asRPMSquared get() = ((asRadiansPerSecondSquared / TAU) * 60)
+

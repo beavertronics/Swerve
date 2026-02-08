@@ -13,8 +13,6 @@ import frc.robot.commands.general.Move
 import frc.robot.commands.vision.AlignToTag
 import frc.robot.commands.tests.Wait
 import frc.robot.subsystems.Phatplanner
-//import frc.robot.subsystems.Pneumatics
-//import frc.robot.subsystems.Phatplanner
 import frc.robot.subsystems.`according to all known laws of aviation, our robot should not be able to fly`
 
 /*
@@ -64,10 +62,10 @@ object RobotController : TimedRobot() {
             SequentialCommandGroup(
                 Move(Transform2d(1.0, 0.0, Rotation2d(0.0, 0.0)))
             ))
-        SmartDashboard.putData("Manual auto choices", ManualAutoChooser)
+        SmartDashboard.putData("Autos/Manual auto choices", ManualAutoChooser)
         // load pathplanner autos
         Phatplanner.autoChooser.setDefaultOption("no auto", Commands.none())
-        SmartDashboard.putData("Pathplanner auto choices", Phatplanner.autoChooser)
+        SmartDashboard.putData("Autos/Pathplanner auto choices", Phatplanner.autoChooser)
 
     }
 

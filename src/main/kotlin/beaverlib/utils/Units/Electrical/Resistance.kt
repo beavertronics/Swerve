@@ -11,8 +11,10 @@ value class Resistance(val asOhms : Double) {
     operator fun unaryMinus() = Resistance(-asOhms)
     operator fun compareTo(other: Resistance) = asOhms.compareTo(other.asOhms)
     override fun toString() = "$asOhms ohms"
-    //Unit conversion math
-    operator fun times(other: Current) = VoltageUnit(asOhms*other.asAmps)
+
+    // Unit Math
+    operator fun times(other : Current) = VoltageUnit(asOhms * other.asAmps)
+    operator fun div(other: Resistance) = asOhms / other.asOhms
 }
 
 //Constructors
@@ -23,3 +25,4 @@ val Number.kiloOhms get() = Resistance(toDouble()*1000)
 //Destructors
 val Resistance.asMilliOhms get() = asOhms*1000
 val Resistance.asOhms get() = asOhms/1000
+

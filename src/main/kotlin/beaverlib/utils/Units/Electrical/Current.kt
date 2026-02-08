@@ -1,5 +1,7 @@
 package beaverlib.utils.Units.Electrical
 
+import frc.robot.beaverlib.utils.Units.Electrical.Energy
+
 @JvmInline
 value class Current (val asAmps: Double) {
     // Basic Math
@@ -12,8 +14,11 @@ value class Current (val asAmps: Double) {
     operator fun compareTo(other: Current) = asAmps.compareTo(other.asAmps)
     override fun toString() = "$asAmps amps"
 
-    //Unit converting math
-    operator fun times(other: Resistance) = VoltageUnit(asAmps * other.asOhms)
+    // Unit Math
+    operator fun times(other: VoltageUnit) = Energy(asAmps * other.asVolts)
+    operator fun times(other : Resistance) = VoltageUnit(asAmps * other.asOhms)
+    operator fun div(other: Current) = asAmps / other.asAmps
+
 }
 
 //Constructors
@@ -29,4 +34,5 @@ val Number.kiloAmps get() = Current(toDouble()*1000)
 
 //Destructors
 val Current.asMilliAmps get() = asAmps*1000
-val Current.asAmps get() = asAmps/1000
+val Current.asKiloamps get() = asAmps/1000
+
