@@ -19,7 +19,7 @@ object `according to all known laws of aviation, our robot should not be able to
                 if (!updateVisionOdometry) return
                 if (result.targets.isEmpty()) return
                 if (
-                    !result.multitagResult.isPresent && (result.targets.first.poseAmbiguity > 0.3)
+                    !result.multitagResult.isPresent && (result.targets.first().poseAmbiguity > 0.3)
                 )
                     return
                 val newPose = camera.getEstimatedRobotPose(result) ?: return

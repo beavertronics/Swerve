@@ -73,6 +73,7 @@ object RobotController : TimedRobot() {
         SmartDashboard.putData("Autos/Pathplanner auto choices", Phatplanner.autoChooser)
 
         // make thing to choose between pathplanner and manual autos
+        AutoTypeChooser.setDefaultOption("Default - Manual", true)
         AutoTypeChooser.addOption("Pathplanner", true)
         AutoTypeChooser.addOption("Manual", false)
         SmartDashboard.putData("Autos/Auto chooser", AutoTypeChooser)

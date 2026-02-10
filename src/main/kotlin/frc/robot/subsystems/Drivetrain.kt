@@ -160,7 +160,7 @@ object Drivetrain : SubsystemBase() {
         /**
          * Locks the robot in place, stopping it from moving. Is disabled by driver inputs.
          */
-//        fun lock() { swerveDrive.lockPose() }
+        fun lock() { swerveDrive.lockPose() }
 
 
 
