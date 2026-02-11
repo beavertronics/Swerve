@@ -2,6 +2,10 @@ package frc.robot.commands.vision
 
 import beaverlib.utils.Sugar.clamp
 import beaverlib.utils.Sugar.roundTo
+import beaverlib.utils.Units.Angular.asRotations
+import beaverlib.utils.Units.Angular.degrees
+import beaverlib.utils.Units.Angular.radians
+import beaverlib.utils.Units.years
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
@@ -10,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command
 import frc.robot.subsystems.Drivetrain
 import frc.robot.subsystems.Vision
 import org.photonvision.targeting.PhotonTrackedTarget
+import edu.wpi.first.wpilibj.Timer
 import kotlin.random.Random
 
 /**
@@ -21,26 +26,28 @@ import kotlin.random.Random
 class AlignToTag(
     val aprilTagID: Int,
     val speedLimit: Double = 1.0,
-    val offsets: Pose2d = Pose2d(1.0, 0.0, Rotation2d())
+    val offsets: Pose2d = Pose2d(1.0, 0.0, Rotation2d()),
+    val end: Boolean = true
 ) : Command() {
     var firstCalculation = false
-    val rotateKP = 0.45 // 0.25
-    val rotateKD = 0.1
-    val xKP = 1.45
-    val yKP = 1.45
+    val rotateKP = 1.5  // 0.45
+    val rotateKD = 0.5 // 0.1
+    val xKP = 2.0
+    val yKP = 2.0
     val rotatePID = PIDController(rotateKP, 0.0, rotateKD)
     val xPID = PIDController(xKP, 0.0, 0.0)
     val yPID = PIDController(yKP, 0.0, 0.0)
     val listenerName = "AlignTag" + aprilTagID + "-" + Random(1)
+    var timeSinceTagSeen = 0.0
+    val timer = Timer()
 
     // add the needed subsystems to requirements
     init {
         addRequirements(Drivetrain)
         // give it some deadzone
-        rotatePID.setTolerance(0.1) // degrees // NOTE NOT USED FOR DEADZONE ONLY FOR FINISH!
+        rotatePID.setTolerance(0.075) // degrees // NOTE NOT USED FOR DEADZONE ONLY FOR FINISH!
         xPID.setTolerance(0.15) // meters
         yPID.setTolerance(0.15) // meters
-
     }
 
     // get the correct april tag
@@ -49,12 +56,18 @@ class AlignToTag(
         // set up vision
         println("Aligning to tag: " + aprilTagID)
         println("Listener name: " + listenerName)
-        Vision.listeners.add(listenerName) { result, _ ->
-            val desiredTagA = result.targets.filter { it.fiducialId == aprilTagID }
-            if (desiredTagA.isNotEmpty()) {
+        Vision.listeners.add(
+            "AlignTag",
+            { result, camera ->
+                val desiredTagA = result.targets.filter { it.fiducialId == aprilTagID }
+                if (desiredTagA.isEmpty() || desiredTagA.first().poseAmbiguity > 0.5) {
+                    return@add
+                }
+                timeSinceTagSeen = timer.get()
                 desiredTag = desiredTagA.first()
-            }
-        }
+                // val robotToTag = camera.poseEstimator.update(result)
+            },
+        )
 
         // reset things
         rotatePID.reset()
@@ -69,8 +82,9 @@ class AlignToTag(
     // align with tag in respects to X, Y, and rotation
     override fun execute() {
         // if we lost the april tag, stop driving (and don't ram into things!)
-        if (desiredTag == null) {
-            Drivetrain.drive(ChassisSpeeds())
+        if (desiredTag == null || timer.get() - timeSinceTagSeen > 0.1) {
+            Drivetrain.stop()
+            println("No tag found")
             return
         }
 
@@ -121,7 +135,14 @@ class AlignToTag(
     }
 
     override fun isFinished(): Boolean {
-        if (xPID.atSetpoint() && yPID.atSetpoint() && rotatePID.atSetpoint() && firstCalculation) {
+        if (
+            xPID.atSetpoint() &&
+            yPID.atSetpoint() &&
+            rotatePID.atSetpoint() &&
+            firstCalculation &&
+            end &&
+            desiredTag != null
+        ) {
             println("Done for tag: " + aprilTagID)
             return true
         }
