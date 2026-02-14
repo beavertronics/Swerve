@@ -1,6 +1,11 @@
 package frc.robot.subsystems
 
 import beaverlib.utils.Units.Electrical.VoltageUnit
+import com.revrobotics.spark.SparkBase
+import com.revrobotics.spark.config.AbsoluteEncoderConfig
+import com.revrobotics.spark.config.EncoderConfig
+import com.revrobotics.spark.config.SparkBaseConfig
+import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
@@ -15,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine
 import swervelib.SwerveDrive
 import swervelib.SwerveDriveTest
+import swervelib.motors.SparkMaxSwerve
 import swervelib.parser.SwerveParser
 import swervelib.telemetry.SwerveDriveTelemetry
 import swervelib.telemetry.SwerveDriveTelemetry.*
@@ -59,6 +65,29 @@ object Drivetrain : SubsystemBase() {
             swerveDrive.setCosineCompensator(false)
             swerveDrive.setHeadingCorrection(false)
             swerveDrive.setMotorIdleMode(false)
+
+            swerveDrive.modules.forEach {
+                (it.angleMotor as SparkMaxSwerve).updateConfig(
+                    SparkMaxConfig()
+                        .smartCurrentLimit(30)
+                        .apply(
+                            AbsoluteEncoderConfig()
+                                .zeroOffset(
+                                    when (it.moduleNumber) {
+                                        0 -> 0.3215787 // front left
+                                        1 -> 0.37379324 // front right
+                                        2 -> 0.020713206 // back left
+                                        3 -> 0.11051667 // back right
+                                        else -> 0.0
+                                    }
+                                )
+                                .inverted(false)
+                                .positionConversionFactor(360.0)
+                                .velocityConversionFactor(6.0)
+                        )
+                        as SparkMaxConfig
+                )
+            }
         }
 
     override fun periodic() {
