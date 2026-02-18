@@ -61,7 +61,7 @@ class AlignToTag(
                 }
                 timeSinceTagSeen = timer.get()
                 desiredTag = desiredTagA.first()
-                // val robotToTag = camera.poseEstimator.update(result)
+//                 val robotToTag = camera.poseEstimator.update(result)
             },
         )
 
@@ -80,7 +80,7 @@ class AlignToTag(
         // if we lost the april tag, stop driving (and don't ram into things!)
         if (desiredTag == null || timer.get() - timeSinceTagSeen > 0.1) {
             Drivetrain.stop()
-            println("No tag found")
+            println("Tag " + aprilTagID + " is not found! is coprocessor online?")
             return
         }
 
@@ -115,12 +115,14 @@ class AlignToTag(
             driveY = 0.0
         }
 
-        println("Rotation error, x error, y error: "
-            + calculatedRotate.roundTo(3)
-            + ", "
-            + calculatedX.roundTo(3)
-            + ", "
-            + calculatedY.roundTo(3)
+        println("Tag, rootation error, x error, y error: "
+                + aprilTagID
+                + ", "
+                + calculatedRotate.roundTo(3)
+                + ", "
+                + calculatedX.roundTo(3)
+                + ", "
+                + calculatedY.roundTo(3)
         )
 
         // add everything into a chassis speed and drive robot
@@ -136,8 +138,8 @@ class AlignToTag(
             yPID.atSetpoint() &&
             rotatePID.atSetpoint() &&
             firstCalculation &&
-            end &&
-            desiredTag != null
+            end
+//            && desiredTag != null
         ) {
             println("Done for tag: " + aprilTagID)
             return true
