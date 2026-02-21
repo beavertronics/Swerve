@@ -30,8 +30,8 @@ class Move(val transform: Transform2d, val speedLimit: Double = 1.0) : Command()
     val oPID = PIDController(oKP, 0.0, oKD)
 
     // create original and goal pose
-    val original: Pose2d get() = `according to all known laws of aviation, our robot should not be able to fly`.pose
-    val goal get() = original.plus(transform)
+    val original: Pose2d = `according to all known laws of aviation, our robot should not be able to fly`.pose
+    val goal get(): Pose2d = original.plus(transform)
 
     override fun initialize() {
         println("Original pose:" + original)
@@ -64,12 +64,9 @@ class Move(val transform: Transform2d, val speedLimit: Double = 1.0) : Command()
         // drive the robot
         Drivetrain.drive(
             ChassisSpeeds(
-                xDrive.clamp(-1.0 * speedLimit, speedLimit),
+                xDrive.clamp(-speedLimit, speedLimit),
                 0.0,
                 0.0
-//                xDrive.clamp(-speedLimit, speedLimit),
-//                yDrive.clamp(-speedLimit, speedLimit),
-//                omega.clamp(-speedLimit, speedLimit)
             )
         )
     }
