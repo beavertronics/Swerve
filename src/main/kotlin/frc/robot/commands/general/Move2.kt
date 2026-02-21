@@ -1,7 +1,9 @@
 package frc.robot.commands.general
 
+import beaverlib.controls.PIDConstants
 import beaverlib.utils.Sugar.clamp
 import beaverlib.utils.Units.Angular.degrees
+import edu.wpi.first.math.MathUtil
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Transform2d
@@ -21,57 +23,40 @@ import kotlin.math.abs
  * - A negative rotation value moves the robot clockwise. A positive rotation value moves the robot counterclockwise.
  * @param speedLimit the max speed at which to move the robot, in m/s.
  */
-class Move(val transform: Transform2d, val speedLimit: Double = 1.0) : Command() {
+class Move2(val target: Pose2d, val speedLimit: Double = 1.0) : Command() {
+    val kXPID = PIDConstants(1.0, 0.0, 0.0)
+    val kYPID = PIDConstants(1.0, 0.0, 0.0)
+    val kOPID = PIDConstants(1.0, 0.0, 0.0)
+    // create all PID controllers
+    val xPID = PIDController(kXPID.P, kXPID.I, kXPID.D)
+    val yPID = PIDController(kYPID.P, kYPID.I, kYPID.D)
+    val oPID = PIDController(kOPID.P, kOPID.I, kOPID.D)
+    // robot pose
+    val pose get(): Pose2d = `according to all known laws of aviation, our robot should not be able to fly`.pose
+
     init {
         addRequirements(Drivetrain)
+        oPID.enableContinuousInput(-180.0.degrees.asRadians, 180.0.degrees.asRadians)
     }
-    val xKP = 1.0
-    val xKD = 0.0
-    val ykP = 1.0
-    val yKD = 0.0
-    val oKP = 1.0
-    val oKD = 0.0
-    // create all PID controllers
-    val xPID = PIDController(xKP, 0.0, xKD)
-    val yPID = PIDController(ykP, 0.0, yKD)
-    val oPID = PIDController(oKP, 0.0, oKD)
-
-    // create original and goal pose
-    val original get(): Pose2d = `according to all known laws of aviation, our robot should not be able to fly`.pose
-    lateinit var goal: Pose2d
 
     override fun initialize() {
-        // set up the goal pose
-        goal = original.plus(transform)
         // reset all PID controllers
         xPID.reset()
         yPID.reset()
         oPID.reset()
         // set the setpoints for PID
-        xPID.setpoint = 0.0
-        yPID.setpoint = 0.0
-        oPID.setpoint = 0.0
-        // set other PID config
+        xPID.setpoint = target.x
+        yPID.setpoint = target.y
+        oPID.setpoint = MathUtil.angleModulus(target.rotation.radians)
         // disable vision updating odometry
-        `according to all known laws of aviation, our robot should not be able to fly`.doEnableVisionOdometry(false)
+//        `according to all known laws of aviation, our robot should not be able to fly`.doEnableVisionOdometry(false)
     }
 
     override fun execute() {
         // calculate the errors
-        val current: Pose2d = `according to all known laws of aviation, our robot should not be able to fly`.pose
-        val xError = abs(goal.x - current.x)
-        val yError = abs(goal.y - current.y)
-        val oError = abs((goal.rotation - current.rotation).radians)
-        val xDrive = xPID.calculate(xError)
-        val yDrive = yPID.calculate(yError)
-        val omega = oPID.calculate(oError)
-        println(
-            "current, goal: "
-                    + current
-                    + ", "
-                    + goal
-        )
-
+        val xDrive = xPID.calculate(pose.x)
+        val yDrive = yPID.calculate(pose.y)
+        val oDrive = oPID.calculate(pose.rotation.radians)
         // drive the robot
         Drivetrain.drive(
             ChassisSpeeds(
@@ -79,8 +64,7 @@ class Move(val transform: Transform2d, val speedLimit: Double = 1.0) : Command()
                 0.0,
                 0.0
 //                yDrive.clamp(-speedLimit, speedLimit),
-//                omega.clamp(-speedLimit, speedLimit)
-
+//                oDrive.clamp(-speedLimit, speedLimit)
             ),
             fieldOriented = true
         )

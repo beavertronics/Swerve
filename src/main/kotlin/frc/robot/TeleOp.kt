@@ -18,6 +18,7 @@ import frc.robot.commands.drive.ChildModeDriveCommand
 import frc.robot.commands.drive.SwankDriveCommand
 import frc.robot.commands.drive.TeleopDriveCommand
 import frc.robot.commands.general.Move
+import frc.robot.commands.general.Move2
 import frc.robot.commands.vision.AlignToTag
 import frc.robot.subsystems.Drivetrain
 
@@ -69,12 +70,12 @@ object TeleOp {
     fun configureBindings() {
         OI.C_LB.whileTrue(AlignToTag(
             aprilTagID = 26,
-            speedLimit = 2.5,
+            speedLimit = 2.0,
             offsets = Pose2d(2.0, 0.0, Rotation2d(0.0, 0.0)),
-            end = false
+            end = true
         ))
         OI.C_RB.whileTrue(InstantCommand(Drivetrain::lock, Drivetrain))
-        OI.C_A.whileTrue(Move(Transform2d(1.0, 0.0, Rotation2d(0.0))))
+        OI.C_A.whileTrue(Move2(Pose2d(1.0, 0.0, Rotation2d(0.0.degrees.asRadians))))
 //        OI.driveCircle.whileTrue(Circle())
 //        OI.lowerIntake.whileTrue(MoveIntake(DoubleSolenoid.Value.kForward))
 //        OI.raiseIntake.whileTrue(MoveIntake(DoubleSolenoid.Value.kReverse))
