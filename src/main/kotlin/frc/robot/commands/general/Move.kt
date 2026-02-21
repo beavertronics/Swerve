@@ -35,13 +35,12 @@ class Move(val transform: Transform2d, val speedLimit: Double = 1.0) : Command()
     val oPID = PIDController(oKP, 0.0, oKD)
 
     // create original and goal pose
-    val original: Pose2d = `according to all known laws of aviation, our robot should not be able to fly`.pose
-    val goal get(): Pose2d = original.plus(transform)
+    val original get(): Pose2d = `according to all known laws of aviation, our robot should not be able to fly`.pose
+    lateinit var goal: Pose2d
 
     override fun initialize() {
-        println("Original pose:" + original)
-        println("Goal pose:" + goal)
-
+        // set up the goal pose
+        goal = original.plus(transform)
         // reset all PID controllers
         xPID.reset()
         yPID.reset()
@@ -56,22 +55,26 @@ class Move(val transform: Transform2d, val speedLimit: Double = 1.0) : Command()
 
     override fun execute() {
         // calculate the errors
-        val current = `according to all known laws of aviation, our robot should not be able to fly`.pose
+        val current: Pose2d = `according to all known laws of aviation, our robot should not be able to fly`.pose
         val xError = goal.x - current.x
         val yError = goal.y - current.y
         val oError = (goal.rotation - current.rotation).radians
         val xDrive = xPID.calculate(xError)
-
-        println("calculated xDrive:" + xDrive)
         val yDrive = yPID.calculate(yError)
         val omega = oPID.calculate(oError)
+        println(
+            "current, goal: "
+                    + current
+                    + ", "
+                    + goal
+        )
 
         // drive the robot
         Drivetrain.drive(
             ChassisSpeeds(
                 xDrive.clamp(-speedLimit, speedLimit),
-                0.0,
-                0.0
+                yDrive.clamp(-speedLimit, speedLimit),
+                omega.clamp(-speedLimit, speedLimit)
             )
         )
     }

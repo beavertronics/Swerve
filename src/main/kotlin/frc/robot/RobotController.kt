@@ -57,9 +57,6 @@ object RobotController : TimedRobot() {
                     AlignToTag(4)
                 )
         )
-        ManualAutoChooser.addOption("1 meter square",
-            SequentialCommandGroup(
-                Move(Transform2d(1.0, 0.0, Rotation2d(0.0, 0.0)))))
         ManualAutoChooser.addOption("Drive Sys ID",
             Drivetrain.sysIdDriveMotor()
         )
