@@ -9,9 +9,13 @@ import edu.wpi.first.wpilibj2.command.Command
 import frc.robot.subsystems.Drivetrain
 import frc.robot.subsystems.`according to all known laws of aviation, our robot should not be able to fly`
 
+// todo redo description?
 /**
  * Moves the robot in x, y, and rotation.
  * @param transform A Transform2D which has the movement in X, Y, and rotation.
+ * - A negative X value moves the robot backwards. A positive X value moves the robot forwards.
+ * - A negative Y value moves the robot right. A positive Y value moves the robot left.
+ * - A negative rotation value moves the robot clockwise. A positive rotation value moves the robot counterclockwise.
  * @param speedLimit the max speed at which to move the robot, in m/s.
  */
 class Move(val transform: Transform2d, val speedLimit: Double = 1.0) : Command() {
