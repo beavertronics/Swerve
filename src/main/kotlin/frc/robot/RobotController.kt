@@ -45,10 +45,6 @@ object RobotController : TimedRobot() {
         Phatplanner
         Orchestrator
 
-        // play music // todo move somewhere else!
-        Orchestrator.load("orchestra/never_gonna_give_you_up.chrp")
-        Orchestrator.play()
-
         // start drive cam // todo replaced by vision feed
         // CameraServer.startAutomaticCapture(0)
 

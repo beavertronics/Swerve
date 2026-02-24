@@ -5,6 +5,7 @@ import beaverlib.utils.Sugar.within
 import beaverlib.utils.Units.Angular.asDegrees
 import beaverlib.utils.Units.Angular.degrees
 import beaverlib.utils.Units.Linear.meters
+import com.ctre.phoenix6.Orchestra
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Transform2d
@@ -21,6 +22,7 @@ import frc.robot.commands.drive.SwankDriveCommand
 import frc.robot.commands.drive.TeleopDriveCommand
 import frc.robot.commands.vision.AlignToTag
 import frc.robot.subsystems.Drivetrain
+import frc.robot.subsystems.Orchestrator
 
 /*
 Sets up the operator interface (controller inputs), as well as
@@ -62,6 +64,7 @@ object TeleOp {
     init {
         // SWAP THIS WITH WHATEVER COMMAND YOU WANT TO BE DRIVING THE ROBOT!
         Drivetrain.defaultCommand = teleOpDrive
+        Orchestrator.load("orchestra/never_gonna_give_you_up.chrp")
     }
 
     /**
@@ -75,9 +78,7 @@ object TeleOp {
             end = true
         ))
         OI.C_RB.whileTrue(InstantCommand(Drivetrain::lock, Drivetrain))
-//        OI.driveCircle.whileTrue(Circle())
-//        OI.lowerIntake.whileTrue(MoveIntake(DoubleSolenoid.Value.kForward))
-//        OI.raiseIntake.whileTrue(MoveIntake(DoubleSolenoid.Value.kReverse))
+        OI.C_RB.whileTrue(InstantCommand(Orchestrator::play, Orchestrator))
     }
 
     /**
