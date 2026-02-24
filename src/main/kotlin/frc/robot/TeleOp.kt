@@ -2,7 +2,9 @@ package frc.robot
 
 import kotlin.math.*
 import beaverlib.utils.Sugar.within
+import beaverlib.utils.Units.Angular.asDegrees
 import beaverlib.utils.Units.Angular.degrees
+import beaverlib.utils.Units.Linear.meters
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Transform2d
@@ -17,8 +19,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.robot.commands.drive.ChildModeDriveCommand
 import frc.robot.commands.drive.SwankDriveCommand
 import frc.robot.commands.drive.TeleopDriveCommand
-import frc.robot.commands.general.Move
-import frc.robot.commands.general.Move2
 import frc.robot.commands.vision.AlignToTag
 import frc.robot.subsystems.Drivetrain
 
@@ -71,11 +71,10 @@ object TeleOp {
         OI.C_LB.whileTrue(AlignToTag(
             aprilTagID = 26,
             speedLimit = 2.0,
-            offsets = Pose2d(2.0, 0.0, Rotation2d(0.0, 0.0)),
+            offsets = Pose2d(2.5.meters.asMeters, -1.0.meters.asMeters, Rotation2d(-45.0.degrees.asRadians)),
             end = true
         ))
         OI.C_RB.whileTrue(InstantCommand(Drivetrain::lock, Drivetrain))
-        OI.C_A.whileTrue(Move2(Pose2d(1.0, 0.0, Rotation2d(0.0.degrees.asRadians))))
 //        OI.driveCircle.whileTrue(Circle())
 //        OI.lowerIntake.whileTrue(MoveIntake(DoubleSolenoid.Value.kForward))
 //        OI.raiseIntake.whileTrue(MoveIntake(DoubleSolenoid.Value.kReverse))
