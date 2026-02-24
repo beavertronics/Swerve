@@ -2,6 +2,7 @@ package frc.robot.subsystems
 
 import beaverlib.utils.Units.Angular.degrees
 import beaverlib.utils.Units.Electrical.VoltageUnit
+import com.ctre.phoenix6.Orchestra
 import com.revrobotics.spark.SparkBase
 import com.revrobotics.spark.config.AbsoluteEncoderConfig
 import com.revrobotics.spark.config.EncoderConfig
@@ -41,12 +42,7 @@ object DriveConstants {
  * the main class for the drivetrain, containing everything
  */
 object Drivetrain : SubsystemBase() {
-        // create anything that is set later (late init)
         var swerveDrive: SwerveDrive
-
-        /**
-         * init file that runs on intialization of drivetrain class
-         */
 
         /** SwerveModuleStates publisher for swerve display */
         var swerveStatePublisher: StructArrayPublisher<SwerveModuleState> =
