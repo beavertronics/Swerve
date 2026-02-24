@@ -1,5 +1,6 @@
 package frc.robot.subsystems
 
+import beaverlib.utils.Units.Angular.degrees
 import beaverlib.utils.Units.Electrical.VoltageUnit
 import com.revrobotics.spark.SparkBase
 import com.revrobotics.spark.config.AbsoluteEncoderConfig
@@ -7,6 +8,7 @@ import com.revrobotics.spark.config.EncoderConfig
 import com.revrobotics.spark.config.SparkBaseConfig
 import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.math.geometry.Rotation3d
 import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.kinematics.SwerveModuleState
@@ -88,6 +90,14 @@ object Drivetrain : SubsystemBase() {
                         as SparkMaxConfig
                 )
             }
+
+            swerveDrive.setGyroOffset( // todo
+                Rotation3d(
+                    0.0,
+                    0.0,
+                    180.0.degrees.asRadians
+                )
+            )
         }
 
     override fun periodic() {
@@ -136,8 +146,8 @@ object Drivetrain : SubsystemBase() {
             centerOfRotation: Translation2d = Translation2d()
         ) {
             swerveDrive.drive(translation, rotation, fieldOriented, false, centerOfRotation)
-
         }
+
         /**
          * Advanced drive method that translates and rotates the robot, with a custom center of rotation.
          * @param translation The desired X and Y velocity of the robot.

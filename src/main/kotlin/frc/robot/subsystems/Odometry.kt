@@ -79,6 +79,13 @@ object `according to all known laws of aviation, our robot should not be able to
         )
     }
 
+    /**
+     * Resets the odometry of swerve to a new pose.
+     */
+    fun resetOdometry(newPose: Pose2d = Pose2d()) {
+        Drivetrain.swerveDrive.resetOdometry(newPose)
+    }
+
     override fun initSendable(builder: SendableBuilder) {
         SendableRegistry.setName(this, toString())
         if (pose != null) {
