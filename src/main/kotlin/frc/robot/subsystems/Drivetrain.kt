@@ -86,14 +86,6 @@ object Drivetrain : SubsystemBase() {
                         as SparkMaxConfig
                 )
             }
-
-            swerveDrive.setGyroOffset( // todo
-                Rotation3d(
-                    0.0,
-                    0.0,
-                    180.0.degrees.asRadians
-                )
-            )
         }
 
     override fun periodic() {

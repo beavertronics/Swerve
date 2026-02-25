@@ -1,6 +1,7 @@
 package frc.robot.subsystems
 
 import com.ctre.phoenix6.Orchestra
+import com.ctre.phoenix6.StatusCode
 import com.ctre.phoenix6.hardware.TalonFX
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 
@@ -16,8 +17,14 @@ object Orchestrator : SubsystemBase() {
 
     init {
         // add all krakens as instruments
+        orchestra.clearInstruments()
         Drivetrain.swerveDrive.modules.forEach {
-            orchestra.addInstrument(it.driveMotor.motor as TalonFX) // todo kraken x60??
+            val driveMotor = it.driveMotor.motor as TalonFX
+            println("ORCHESTRA: Motor added (" +
+                    driveMotor.deviceID +
+                    "): " +
+                    orchestra.addInstrument(it.driveMotor.motor as TalonFX)
+            )
         }
     }
 
@@ -36,7 +43,7 @@ object Orchestrator : SubsystemBase() {
     /**
      * Plays the loaded music file.
      */
-    fun play() { orchestra.play() }
+    fun play() : StatusCode { return orchestra.play() }
 
     /**
      * Stops the loaded music file.
