@@ -36,7 +36,7 @@ class AlignToTag(
     val end: Boolean = true
 ) : Command() {
     var firstCalculation = false
-    val rotateKP = 1.5  // 0.45
+    val rotateKP = 2.0  // 0.45
     val rotateKD = 0.0 // 0.1
     val xKP = 2.0
     val yKP = 2.0

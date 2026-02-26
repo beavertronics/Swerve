@@ -42,8 +42,14 @@ val Vision = BeaverPhotonVision(
     BeaverVisionCamera(
         name = "Arducam_OV9281_USB_Camera - Camronny",
         // 12.5 inches backwards, 7.0 inches right, 22.5 inches up on the robot
+//        robotToCamera = Transform3d(
+//            -12.5.inches.asMeters, -7.0.inches.asMeters, 22.5.inches.asMeters,
+//            Rotation3d(
+//                0.0.degrees.asRadians, 0.0.degrees.asRadians, 0.0.degrees.asRadians
+//            )
+//        ),
         robotToCamera = Transform3d(
-            -12.5.inches.asMeters, -7.0.inches.asMeters, 22.5.inches.asMeters,
+            -16.65.inches.asMeters, -9.5.inches.asMeters, 17.0.inches.asMeters, // -13.15, -9.5
             Rotation3d(
                 0.0.degrees.asRadians, 0.0.degrees.asRadians, 0.0.degrees.asRadians
             )
