@@ -114,7 +114,9 @@ object RobotController : TimedRobot() {
     override fun teleopInit() {
         TeleOp.configureBindings()
         if (!AutoTypeChooser.selected && selectedManualAuto != null) { selectedManualAuto?.cancel() }
-        else if (AutoTypeChooser.selected && selectedPathAuto != null) { selectedPathAuto?.cancel() }
+        else if (AutoTypeChooser.selected && selectedPathAuto != null) { selectedPathAuto?.cancel()
+        Orchestrator.stop()
+        }
     }
 
     /**

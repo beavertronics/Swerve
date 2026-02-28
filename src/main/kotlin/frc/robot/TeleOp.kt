@@ -7,10 +7,12 @@ import beaverlib.utils.Units.Angular.degrees
 import beaverlib.utils.Units.Linear.meters
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.math.kinematics.Odometry
 import edu.wpi.first.wpilibj.GenericHID
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.InstantCommand
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
@@ -20,6 +22,7 @@ import frc.robot.commands.drive.TeleopDriveCommand
 import frc.robot.commands.general.Move
 import frc.robot.commands.vision.AlignToTag
 import frc.robot.subsystems.Drivetrain
+import frc.robot.subsystems.`according to all known laws of aviation, our robot should not be able to fly`
 
 /*
 Sets up the operator interface (controller inputs), as well as
@@ -74,15 +77,13 @@ object TeleOp {
             end = true
         ))
         OI.C_RB.whileTrue(InstantCommand(Drivetrain::lock, Drivetrain))
-//        OI.C_RB.whileTrue(Move(
-//            Pose2d(
-//                FieldMapREBUILTWelded.teamHub.center.x.meters.asMeters,
-//                FieldMapREBUILTWelded.teamHub.center.y.meters.asMeters -
-//                        FieldMapREBUILTWelded.HubWidth.meters.asMeters -
-//                        2.0,
-//                Rotation2d(0.0.degrees.asRadians)
-//            )
-//        ))
+        OI.C_A.whileTrue(Move(
+            Pose2d(
+                FieldMapREBUILTWelded.teamHub.center.x,
+                FieldMapREBUILTWelded.teamHub.center.y,
+                Rotation2d(
+                    FieldMapREBUILTWelded.teamHub.center.angle.asRadians
+                ))))
     }
 
     /**
