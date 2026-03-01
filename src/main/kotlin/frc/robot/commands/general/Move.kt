@@ -4,7 +4,6 @@ import beaverlib.controls.PIDConstants
 import beaverlib.controls.toPID
 import beaverlib.utils.Sugar.clamp
 import beaverlib.utils.Units.Angular.degrees
-import beaverlib.utils.Units.Angular.radians
 import edu.wpi.first.math.MathUtil
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
@@ -12,11 +11,13 @@ import edu.wpi.first.wpilibj2.command.Command
 import frc.robot.subsystems.Drivetrain
 import frc.robot.subsystems.`according to all known laws of aviation, our robot should not be able to fly`
 
-// todo redo description?
 // https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html
 /**
- * TODO
- */
+ * Moves the robot to an absolute point on the field.
+ * @param target the target pose you want to move the robot to.
+ * - An absolute point is a fixed point on the field.
+ * @param speedLimit the speed, in m/s, to limit the robot to.
+ * */
 class Move(val target: Pose2d, val speedLimit: Double = 1.0) : Command() {
     val kXPID = PIDConstants(1.0, 0.0, 0.0)
     val kYPID = PIDConstants(1.0, 0.0, 0.0)
@@ -30,7 +31,7 @@ class Move(val target: Pose2d, val speedLimit: Double = 1.0) : Command() {
 
     init {
         addRequirements(Drivetrain)
-//        oPID.enableContinuousInput(-180.0.degrees.asRadians, 180.0.degrees.asRadians)
+        oPID.enableContinuousInput(-180.0.degrees.asRadians, 180.0.degrees.asRadians)
     }
 
     override fun initialize() {
@@ -41,8 +42,8 @@ class Move(val target: Pose2d, val speedLimit: Double = 1.0) : Command() {
         // set the setpoints for PID
         xPID.setpoint = target.x
         yPID.setpoint = target.y
-//        oPID.setpoint = MathUtil.angleModulus(target.rotation.radians)
-        oPID.setpoint = target.rotation.radians - 180.0.degrees.asRadians
+        // I do not know what I did but without subtracting 180 degrees it does random spins
+        oPID.setpoint = MathUtil.angleModulus(target.rotation.radians) - 180.0.degrees.asRadians
         // disable vision updating odometry
 //        `according to all known laws of aviation, our robot should not be able to fly`.doEnableVisionOdometry(false)
     }
