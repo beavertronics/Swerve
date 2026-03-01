@@ -1,10 +1,11 @@
 package frc.robot.commands.general
 
 import beaverlib.controls.PIDConstants
+import beaverlib.controls.toPID
 import beaverlib.utils.Sugar.clamp
 import beaverlib.utils.Units.Angular.degrees
+import beaverlib.utils.Units.Angular.radians
 import edu.wpi.first.math.MathUtil
-import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.wpilibj2.command.Command
@@ -14,27 +15,22 @@ import frc.robot.subsystems.`according to all known laws of aviation, our robot 
 // todo redo description?
 // https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html
 /**
- * Moves the robot in x, y, and rotation.
- * @param transform A Transform2D which has the movement in X, Y, and rotation.
- * - A negative X value moves the robot backwards. A positive X value moves the robot forwards.
- * - A negative Y value moves the robot right. A positive Y value moves the robot left.
- * - A negative rotation value moves the robot clockwise. A positive rotation value moves the robot counterclockwise.
- * @param speedLimit the max speed at which to move the robot, in m/s.
+ * TODO
  */
 class Move(val target: Pose2d, val speedLimit: Double = 1.0) : Command() {
     val kXPID = PIDConstants(1.0, 0.0, 0.0)
     val kYPID = PIDConstants(1.0, 0.0, 0.0)
     val kOPID = PIDConstants(1.0, 0.0, 0.0)
     // create all PID controllers
-    val xPID = PIDController(kXPID.P, kXPID.I, kXPID.D)
-    val yPID = PIDController(kYPID.P, kYPID.I, kYPID.D)
-    val oPID = PIDController(kOPID.P, kOPID.I, kOPID.D)
+    val xPID = kXPID.toPID()
+    val yPID = kYPID.toPID()
+    val oPID = kOPID.toPID()
     // robot pose
     val pose get(): Pose2d = `according to all known laws of aviation, our robot should not be able to fly`.pose
 
     init {
         addRequirements(Drivetrain)
-        oPID.enableContinuousInput(-180.0.degrees.asRadians, 180.0.degrees.asRadians)
+//        oPID.enableContinuousInput(-180.0.degrees.asRadians, 180.0.degrees.asRadians)
     }
 
     override fun initialize() {
@@ -45,7 +41,8 @@ class Move(val target: Pose2d, val speedLimit: Double = 1.0) : Command() {
         // set the setpoints for PID
         xPID.setpoint = target.x
         yPID.setpoint = target.y
-        oPID.setpoint = MathUtil.angleModulus(target.rotation.radians)
+//        oPID.setpoint = MathUtil.angleModulus(target.rotation.radians)
+        oPID.setpoint = target.rotation.radians - 180.0.degrees.asRadians
         // disable vision updating odometry
 //        `according to all known laws of aviation, our robot should not be able to fly`.doEnableVisionOdometry(false)
     }
@@ -72,7 +69,7 @@ class Move(val target: Pose2d, val speedLimit: Double = 1.0) : Command() {
 
     override fun end(interrupted: Boolean) {
         Drivetrain.stop()
-        `according to all known laws of aviation, our robot should not be able to fly`.doEnableVisionOdometry(true)
+//        `according to all known laws of aviation, our robot should not be able to fly`.doEnableVisionOdometry(true)
         return
     }
 }
