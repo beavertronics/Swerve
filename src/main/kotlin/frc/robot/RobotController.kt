@@ -76,7 +76,7 @@ object RobotController : TimedRobot() {
         ManualAutoChooser.addOption("Move testing", Move(Pose2d(
             1.0,
             0.0,
-            Rotation2d(0.0.degrees.asRadians)
+            Rotation2d((0.0).degrees.asRadians)
         )
         ))
         SmartDashboard.putData("Autos/Manual auto choices", ManualAutoChooser)

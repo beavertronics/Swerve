@@ -43,7 +43,7 @@ class Move(val target: Pose2d, val speedLimit: Double = 1.0) : Command() {
         xPID.setpoint = target.x
         yPID.setpoint = target.y
         // I do not know what I did but without subtracting 180 degrees it does random spins
-        oPID.setpoint = MathUtil.angleModulus(target.rotation.radians) - 180.0.degrees.asRadians
+        oPID.setpoint = MathUtil.angleModulus(target.rotation.radians) // - 180.0.degrees.asRadians
         // disable vision updating odometry
 //        `according to all known laws of aviation, our robot should not be able to fly`.doEnableVisionOdometry(false)
     }
