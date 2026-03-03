@@ -1,6 +1,8 @@
 package frc.robot
 
+import beaverlib.fieldmap.FieldMapREBUILTWelded
 import beaverlib.utils.Units.Angular.degrees
+import beaverlib.utils.Units.Linear.meters
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.wpilibj.TimedRobot
@@ -74,8 +76,10 @@ object RobotController : TimedRobot() {
             InstantCommand( { Orchestrator.loadnplay("orchestra/silver_springs_fleetwood_mac.chrp")}, Orchestrator)
         )
         ManualAutoChooser.addOption("Move testing", Move(Pose2d(
-            1.0,
-            0.0,
+            FieldMapREBUILTWelded.teamHub.center.x,
+            FieldMapREBUILTWelded.teamHub.center.y
+                - FieldMapREBUILTWelded.HubWidth / 2
+                - 2.0.meters.asMeters,
             Rotation2d((0.0).degrees.asRadians)
         )
         ))
