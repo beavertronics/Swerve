@@ -26,8 +26,6 @@ class Move(val target: Pose2d, val speedLimit: Double = 1.0) : Command() {
     val xPID = kXPID.toPID()
     val yPID = kYPID.toPID()
     val oPID = kOPID.toPID()
-    // robot pose
-    val pose get(): Pose2d = `according to all known laws of aviation, our robot should not be able to fly`.pose
 
     init {
         addRequirements(Drivetrain)
@@ -45,14 +43,23 @@ class Move(val target: Pose2d, val speedLimit: Double = 1.0) : Command() {
         // I do not know what I did but without subtracting 180 degrees it does random spins
         oPID.setpoint = MathUtil.angleModulus(target.rotation.radians) // - 180.0.degrees.asRadians
         // disable vision updating odometry
-//        `according to all known laws of aviation, our robot should not be able to fly`.doEnableVisionOdometry(false)
+        `according to all known laws of aviation, our robot should not be able to fly`.doEnableVisionOdometry(false)
     }
 
     override fun execute() {
         // calculate the errors
-        val xDrive = xPID.calculate(pose.x)
-        val yDrive = yPID.calculate(pose.y)
-        val oDrive = oPID.calculate(pose.rotation.radians)
+        val xDrive = xPID.calculate(
+            `according to all known laws of aviation, our robot should not be able to fly`.pose.x
+            * 1.0
+        )
+        val yDrive = yPID.calculate(
+            `according to all known laws of aviation, our robot should not be able to fly`.pose.y
+            * 1.0
+        )
+        val oDrive = oPID.calculate(
+            `according to all known laws of aviation, our robot should not be able to fly`.pose.rotation.radians
+            * 1.0
+        )
         // drive the robot
         Drivetrain.drive(
             ChassisSpeeds(
@@ -70,7 +77,7 @@ class Move(val target: Pose2d, val speedLimit: Double = 1.0) : Command() {
 
     override fun end(interrupted: Boolean) {
         Drivetrain.stop()
-//        `according to all known laws of aviation, our robot should not be able to fly`.doEnableVisionOdometry(true)
+        `according to all known laws of aviation, our robot should not be able to fly`.doEnableVisionOdometry(true)
         return
     }
 }

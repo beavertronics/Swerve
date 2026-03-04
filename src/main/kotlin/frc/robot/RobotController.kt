@@ -75,14 +75,6 @@ object RobotController : TimedRobot() {
         ManualAutoChooser.addOption("Orchestra - Silver Springs by Fleetwood Mac",
             InstantCommand( { Orchestrator.loadnplay("orchestra/silver_springs_fleetwood_mac.chrp")}, Orchestrator)
         )
-        ManualAutoChooser.addOption("Move testing", Move(Pose2d(
-            FieldMapREBUILTWelded.teamHub.center.x,
-            FieldMapREBUILTWelded.teamHub.center.y
-                - FieldMapREBUILTWelded.HubWidth / 2
-                - 2.0.meters.asMeters,
-            Rotation2d((0.0).degrees.asRadians)
-        )
-        ))
         SmartDashboard.putData("Autos/Manual auto choices", ManualAutoChooser)
 
         // load pathplanner autos
@@ -125,9 +117,10 @@ object RobotController : TimedRobot() {
     override fun teleopInit() {
         TeleOp.configureBindings()
         if (!AutoTypeChooser.selected && selectedManualAuto != null) { selectedManualAuto?.cancel() }
-        else if (AutoTypeChooser.selected && selectedPathAuto != null) { selectedPathAuto?.cancel()
+        else if (AutoTypeChooser.selected && selectedPathAuto != null) { selectedPathAuto?.cancel() }
         Orchestrator.stop()
-        }
+        `according to all known laws of aviation, our robot should not be able to fly`
+            .resetOdometry(Pose2d())
     }
 
     /**

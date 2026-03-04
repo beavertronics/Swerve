@@ -79,10 +79,10 @@ object TeleOp {
         OI.C_RB.whileTrue(InstantCommand(Drivetrain::lock, Drivetrain))
         OI.C_A.whileTrue(
             Move(Pose2d(
-                FieldMapREBUILTWelded.teamHub.center.x,
-                FieldMapREBUILTWelded.teamHub.center.y
-                        - FieldMapREBUILTWelded.HubWidth / 2
-                        - 2.0.meters.asMeters,
+                FieldMapREBUILTWelded.teamHub.center.x
+                    - FieldMapREBUILTWelded.HubWidth / 2
+                    - 2.0.meters.asMeters,
+                FieldMapREBUILTWelded.teamHub.center.y,
                 Rotation2d((0.0).degrees.asRadians)
             ))
         )
