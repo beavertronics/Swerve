@@ -119,8 +119,6 @@ object RobotController : TimedRobot() {
         if (!AutoTypeChooser.selected && selectedManualAuto != null) { selectedManualAuto?.cancel() }
         else if (AutoTypeChooser.selected && selectedPathAuto != null) { selectedPathAuto?.cancel() }
         Orchestrator.stop()
-        `according to all known laws of aviation, our robot should not be able to fly`
-            .resetOdometry(Pose2d())
     }
 
     /**

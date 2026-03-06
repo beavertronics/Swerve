@@ -49,15 +49,15 @@ object TeleOp {
         )
     val childDrive: ChildModeDriveCommand =
         ChildModeDriveCommand(
-            { OI.C_LY },
-            { OI.C_LX },
-            { OI.C_RX },
-            { OI.C_LB.asBoolean },
-            { OI.LJS_Y },
-            { OI.LJS_X },
-            { OI.RJS_X },
-            { OI.C_RT.asBoolean },
-            { OI.C_LT.asBoolean }
+            { OI.C_LY }, // parent forward
+            { OI.C_LX }, // parent strafe
+            { OI.C_RX }, // parent rotate
+            { OI.C_LB.asBoolean }, // toggle child mode
+            { OI.LJS_Y }, // child forwards
+            { OI.LJS_X }, // child strafe
+            { OI.RJS_X }, // child rotate
+            { OI.C_RT.asBoolean }, // drive mode
+            { OI.C_LT.asBoolean } // slow mode
 
         )
 
@@ -70,22 +70,27 @@ object TeleOp {
      * configures things to run on specific inputs
      */
     fun configureBindings() {
-        OI.C_LB.whileTrue(AlignToTag(
-            aprilTagID = 26,
-            speedLimit = 1.75,
-            offsets = Pose2d(2.5.meters.asMeters, 0.0.meters.asMeters, Rotation2d(0.0.degrees.asRadians)),
-            end = true
-        ))
-        OI.C_RB.whileTrue(InstantCommand(Drivetrain::lock, Drivetrain))
-        OI.C_A.whileTrue(
-            Move(Pose2d(
-                FieldMapREBUILTWelded.teamHub.center.x
-                    - FieldMapREBUILTWelded.HubWidth / 2
-                    - 2.0.meters.asMeters,
-                FieldMapREBUILTWelded.teamHub.center.y,
-                Rotation2d((0.0).degrees.asRadians)
-            ))
-        )
+//        OI.C_LB.whileTrue(AlignToTag(
+//            aprilTagID = 26,
+//            speedLimit = 1.75,
+//            offsets = Pose2d(2.5.meters.asMeters, 0.0.meters.asMeters, Rotation2d(0.0.degrees.asRadians)),
+//            end = true
+//        ))
+//        OI.C_RB.whileTrue(InstantCommand(Drivetrain::lock, Drivetrain))
+//        OI.C_A.whileTrue(
+//            Move(Pose2d(
+//                FieldMapREBUILTWelded.teamHub.center.x
+//                    - FieldMapREBUILTWelded.HubWidth / 2
+//                    - 2.0.meters.asMeters,
+//                FieldMapREBUILTWelded.teamHub.center.y,
+//                Rotation2d((0.0).degrees.asRadians)
+//            ))
+//        )
+//        OI.C_X.whileTrue(
+//            InstantCommand({
+//                `according to all known laws of aviation, our robot should not be able to fly`.resetOdometry(Pose2d())
+//            })
+//        )
     }
 
     /**
@@ -169,6 +174,7 @@ object TeleOp {
         val LJS_Y get() = leftJoystick.y.processInput()
         val RJS_X get() = rightJoystick.x.processInput()
         val C_A get() = xboxController.a()
+        val C_X get() = xboxController.x()
         val RJS_Y get() = rightJoystick.y.processInput()
         //===== SUBSYSTEMS =====//
     }

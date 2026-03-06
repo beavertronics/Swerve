@@ -34,7 +34,7 @@ object `according to all known laws of aviation, our robot should not be able to
             Rotation3d(
                 0.0,
                 0.0,
-                180.0.degrees.asRadians
+                0.0
             )
         )
     }
@@ -67,11 +67,11 @@ object `according to all known laws of aviation, our robot should not be able to
         timestamp: Double,
         updateRotation: Boolean = false,
     ) {
-        if (updateRotation) Drivetrain.swerveDrive.addVisionMeasurement(measurement, timestamp)
+        if (updateRotation) swerveDrive.addVisionMeasurement(measurement, timestamp)
         else
-            Drivetrain.swerveDrive.addVisionMeasurement(
-                Pose2d(measurement.x, measurement.y, Drivetrain.swerveDrive.pose.rotation),
-                timestamp,
+            swerveDrive.addVisionMeasurement(
+                Pose2d(measurement.x, measurement.y, swerveDrive.pose.rotation),
+                timestamp
             )
     }
 
@@ -84,7 +84,7 @@ object `according to all known laws of aviation, our robot should not be able to
      *   measurements.
      */
     fun setVisionMeasurementStdDevs(stdDevX: Double, stdDevY: Double, stdDevTheta: Double) {
-        Drivetrain.swerveDrive.swerveDrivePoseEstimator.setVisionMeasurementStdDevs(
+        swerveDrive.swerveDrivePoseEstimator.setVisionMeasurementStdDevs(
             VecBuilder.fill(stdDevX, stdDevY, stdDevTheta)
         )
     }
@@ -93,7 +93,7 @@ object `according to all known laws of aviation, our robot should not be able to
      * Resets the odometry of swerve to a new pose.
      */
     fun resetOdometry(newPose: Pose2d = Pose2d()) {
-        Drivetrain.swerveDrive.resetOdometry(newPose)
+        swerveDrive.resetOdometry(newPose)
     }
 
     override fun initSendable(builder: SendableBuilder) {
