@@ -52,18 +52,18 @@ object TeleOp {
             { OI.C_LY }, // parent forward
             { OI.C_LX }, // parent strafe
             { OI.C_RX }, // parent rotate
-            { OI.C_LB.asBoolean }, // toggle child mode
+            { OI.C_RT.asBoolean }, // toggle child mode
             { OI.LJS_Y }, // child forwards
             { OI.LJS_X }, // child strafe
             { OI.RJS_X }, // child rotate
-            { OI.C_RT.asBoolean }, // drive mode
+            { OI.C_LB.asBoolean }, // drive mode
             { OI.C_LT.asBoolean } // slow mode
 
         )
 
     init {
         // SWAP THIS WITH WHATEVER COMMAND YOU WANT TO BE DRIVING THE ROBOT!
-        Drivetrain.defaultCommand = teleOpDrive
+        Drivetrain.defaultCommand = childDrive
     }
 
     /**

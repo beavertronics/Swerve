@@ -40,7 +40,7 @@ class ChildModeDriveCommand(
 
     // general inputs
     val driveMode: BooleanSupplier, // only applies for parent, not child
-    val slowMode: BooleanSupplier, // by default on for child
+    val slowMode: BooleanSupplier // by default on for child
 ) : Command() {
 
     private val swerveController = Drivetrain.swerveDrive.getSwerveController()
@@ -78,9 +78,9 @@ class ChildModeDriveCommand(
             strafeVelocity = pSV
             angVelocity = pAV
             if (slowMode.asBoolean) {
-                forwardVelocity * slowMult
-                strafeVelocity * slowMult
-                angVelocity * slowMult
+                forwardVelocity *= slowMult
+                strafeVelocity *= slowMult
+                angVelocity *= slowMult
             }
         }
 
